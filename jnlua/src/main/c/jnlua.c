@@ -150,8 +150,8 @@ JNIEXPORT jstring JNICALL Java_com_naef_jnlua_LuaState_lua_1version(JNIEnv *env,
 	const char *luaVersion;
 	
 	luaVersion = LUA_VERSION;
-	if (strncmp(luaVersion, "Lua ", 4) == 0) {
-		luaVersion += 4;
+	if (strncmp(luaVersion, "Lua+Eris ", 9) == 0) {
+		luaVersion += 9;
 	}
 	return (*env)->NewStringUTF(env, luaVersion); 
 }
@@ -390,6 +390,10 @@ static int openlib_protected (lua_State *L) {
 		libname = LUA_DBLIBNAME;
 		openfunc = luaopen_debug;
 		break;
+	case 10:
+		libname = LUA_ERISLIBNAME;
+		openfunc = luaopen_eris;
+		break;
 	default:
 		return 0;
 	}
@@ -402,7 +406,7 @@ JNIEXPORT void JNICALL Java_com_naef_jnlua_LuaState_lua_1openlib (JNIEnv *env, j
 	JNLUA_ENV(env);
 	L = getluathread(obj);
 	if (checkstack(L, JNLUA_MINSTACK)
-			&& checkarg(lib >= 0 && lib <= 9, "illegal library")) {
+			&& checkarg(lib >= 0 && lib <= 10, "illegal library")) {
 		openlib_lib = lib;
 		lua_pushcfunction(L, openlib_protected);
 		JNLUA_PCALL(L, 0, 1);

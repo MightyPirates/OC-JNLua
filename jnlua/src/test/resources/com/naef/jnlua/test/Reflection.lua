@@ -3,7 +3,9 @@ $Id$
 See LICENSE.txt for license terms.
 ]]
 
-module(..., package.seeall)
+--module(..., package.seeall)
+_G.Reflection = {}
+_ENV = setmetatable(Reflection, {__index=_ENV})
 
 -- General reflection test
 function testReflection ()

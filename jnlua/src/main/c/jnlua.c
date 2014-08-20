@@ -2061,12 +2061,13 @@ static int calljavafunction (lua_State *L) {
 	} else {
 		setluathread(thread_env, javastate, L);
 		nresults = (*thread_env)->CallIntMethod(thread_env, javafunction, invoke_id, javastate);
-		setluathread(thread_env, javastate, T);
 	}
 	
 	/* Handle exception */
 	throwable = (*thread_env)->ExceptionOccurred(thread_env);
 	if (throwable) {
+		(*thread_env)->ExceptionClear(thread_env);
+		setluathread(thread_env, javastate, T);
 		/* Push exception & clear */
 		luaL_where(L, 1);
 		where = tostring(L, -1);
@@ -2076,10 +2077,12 @@ static int calljavafunction (lua_State *L) {
 		} else {
 			lua_pushliteral(L, "JNI error: NewObject() failed creating Lua error");
 		}
-		(*thread_env)->ExceptionClear(thread_env);
 		
 		/* Error out */
 		return lua_error(L);
+	}
+	else {
+		setluathread(thread_env, javastate, T);
 	}
 	
 	/* Handle yield */

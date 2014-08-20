@@ -3,7 +3,9 @@ $Id$
 See LICENSE.txt for license terms.
 ]]
 
-module(..., package.seeall)
+--module(..., package.seeall)
+_G.JavaModule = {}
+_ENV = setmetatable(JavaModule, {__index=_ENV})
 
 -- java.require()
 function testRequire ()

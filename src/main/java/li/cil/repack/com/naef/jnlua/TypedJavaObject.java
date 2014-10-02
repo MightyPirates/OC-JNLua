@@ -3,7 +3,7 @@
  * See LICENSE.txt for license terms.
  */
 
-package com.naef.jnlua;
+package li.cil.repack.com.naef.jnlua;
 
 /**
  * Represents a Java object with an explicit type.
@@ -19,7 +19,7 @@ package com.naef.jnlua;
  * The interface is also implemented by objects wrapping another object and
  * offering transparent conversion to the wrapped object if needed. This
  * situation for example occurs when an object implements the
- * {@link com.naef.jnlua.JavaReflector} interface to provide custom Java
+ * {@link li.cil.repack.com.naef.jnlua.JavaReflector} interface to provide custom Java
  * reflection for a wrapped object and at the same time wants to ensure
  * transparent conversion to the wrapped object if needed. Such typed Java
  * objects are considered <i>strong</i> since they have a representative value

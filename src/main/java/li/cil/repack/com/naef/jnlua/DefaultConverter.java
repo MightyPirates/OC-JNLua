@@ -3,7 +3,7 @@
  * See LICENSE.txt for license terms.
  */
 
-package com.naef.jnlua;
+package li.cil.repack.com.naef.jnlua;
 
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.naef.jnlua.util.AbstractTableList;
-import com.naef.jnlua.util.AbstractTableMap;
+import li.cil.repack.com.naef.jnlua.util.AbstractTableList;
+import li.cil.repack.com.naef.jnlua.util.AbstractTableMap;
 
 /**
  * Default implementation of the <code>Converter</code> interface.

@@ -3,7 +3,7 @@
  * See LICENSE.txt for license terms.
  */
 
-package com.naef.jnlua;
+package li.cil.repack.com.naef.jnlua;
 
 /**
  * Abstract base class for Lua error conditions. Lua exceptions are unchecked

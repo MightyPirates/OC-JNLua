@@ -3,7 +3,7 @@
  * See LICENSE.txt for license terms.
  */
 
-package com.naef.jnlua.script;
+package li.cil.repack.com.naef.jnlua.script;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,7 +12,7 @@ import java.util.List;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 
-import com.naef.jnlua.LuaState;
+import li.cil.repack.com.naef.jnlua.LuaState;
 
 /**
  * Lua script engine factory implementation conforming to JSR 223: Scripting for

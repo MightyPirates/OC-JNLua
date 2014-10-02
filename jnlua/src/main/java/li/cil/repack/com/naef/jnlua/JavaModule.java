@@ -3,7 +3,7 @@
  * See LICENSE.txt for license terms.
  */
 
-package com.naef.jnlua;
+package li.cil.repack.com.naef.jnlua;
 
 import java.lang.reflect.Array;
 import java.util.HashMap;
@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.naef.jnlua.JavaReflector.Metamethod;
+import li.cil.repack.com.naef.jnlua.JavaReflector.Metamethod;
 
 /**
  * Provides the Java module for Lua. The Java module contains Java functions for
@@ -60,7 +60,7 @@ public class JavaModule {
 	/**
 	 * Opens this module in a Lua state. The method is invoked by
 	 * {@link LuaState#openLibs()} or by
-	 * {@link LuaState#openLib(com.naef.jnlua.LuaState.Library)} if
+	 * {@link LuaState#openLib(li.cil.repack.com.naef.jnlua.LuaState.Library)} if
 	 * {@link LuaState.Library#JAVA} is passed. The module is pushed onto the
 	 * stack.
 	 * 

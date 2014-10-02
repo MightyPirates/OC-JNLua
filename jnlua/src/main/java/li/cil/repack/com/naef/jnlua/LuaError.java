@@ -3,7 +3,7 @@
  * See LICENSE.txt for license terms.
  */
 
-package com.naef.jnlua;
+package li.cil.repack.com.naef.jnlua;
 
 /**
  * Contains information about a Lua error condition. This object is created in

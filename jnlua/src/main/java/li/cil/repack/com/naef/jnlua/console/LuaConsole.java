@@ -3,7 +3,7 @@
  * See LICENSE.txt for license terms.
  */
 
-package com.naef.jnlua.console;
+package li.cil.repack.com.naef.jnlua.console;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -13,9 +13,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
-import com.naef.jnlua.LuaException;
-import com.naef.jnlua.LuaRuntimeException;
-import com.naef.jnlua.LuaState;
+import li.cil.repack.com.naef.jnlua.LuaException;
+import li.cil.repack.com.naef.jnlua.LuaRuntimeException;
+import li.cil.repack.com.naef.jnlua.LuaState;
 
 /**
  * A simple Lua console.

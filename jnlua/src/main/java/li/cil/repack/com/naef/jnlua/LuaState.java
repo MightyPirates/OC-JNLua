@@ -3,7 +3,7 @@
  * See LICENSE.txt for license terms.
  */
 
-package com.naef.jnlua;
+package li.cil.repack.com.naef.jnlua;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import java.lang.reflect.Proxy;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.naef.jnlua.JavaReflector.Metamethod;
+import li.cil.repack.com.naef.jnlua.JavaReflector.Metamethod;
 
 /**
  * JNLua core class representing a Lua instance.
@@ -59,25 +59,25 @@ import com.naef.jnlua.JavaReflector.Metamethod;
  * specify that the count may be negative or out of range</td>
  * </tr>
  * <tr>
- * <td>{@link com.naef.jnlua.LuaRuntimeException}</td>
+ * <td>{@link li.cil.repack.com.naef.jnlua.LuaRuntimeException}</td>
  * <td>if a Lua runtime error occurs</td>
  * </tr>
  * <tr>
- * <td>{@link com.naef.jnlua.LuaSyntaxException}</td>
+ * <td>{@link li.cil.repack.com.naef.jnlua.LuaSyntaxException}</td>
  * <td>if the syntax of a Lua chunk is incorrect</td>
  * </tr>
  * <tr>
- * <td>{@link com.naef.jnlua.LuaMemoryAllocationException}</td>
+ * <td>{@link li.cil.repack.com.naef.jnlua.LuaMemoryAllocationException}</td>
  * <td>if the Lua memory allocator runs out of memory or if a JNI allocation
  * fails</td>
  * </tr>
  * <tr>
- * <td>{@link com.naef.jnlua.LuaGcMetamethodException}</td>
+ * <td>{@link li.cil.repack.com.naef.jnlua.LuaGcMetamethodException}</td>
  * <td>if an error occurs running a <code>__gc</code> metamethod during garbage
  * collection</td>
  * </tr>
  * <tr>
- * <td>{@link com.naef.jnlua.LuaMessageHandlerException}</td>
+ * <td>{@link li.cil.repack.com.naef.jnlua.LuaMessageHandlerException}</td>
  * <td>if an error occurs running the message handler of a protected call</td>
  * </tr>
  * </table>
@@ -361,7 +361,7 @@ public class LuaState {
 
 	/**
 	 * Returns a metamethod for a specified object. If the object implements the
-	 * {@link com.naef.jnlua.JavaReflector} interface, the metamethod is first
+	 * {@link li.cil.repack.com.naef.jnlua.JavaReflector} interface, the metamethod is first
 	 * queried from the object. If the object provides the requested metamethod,
 	 * that metamethod is returned. Otherwise, the method returns the metamethod
 	 * provided by the Java reflector configured in this Lua state.

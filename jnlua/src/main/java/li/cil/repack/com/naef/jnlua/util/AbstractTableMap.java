@@ -3,7 +3,7 @@
  * See LICENSE.txt for license terms.
  */
 
-package com.naef.jnlua.util;
+package li.cil.repack.com.naef.jnlua.util;
 
 import java.util.AbstractMap;
 import java.util.AbstractSet;
@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import com.naef.jnlua.LuaState;
-import com.naef.jnlua.LuaValueProxy;
+import li.cil.repack.com.naef.jnlua.LuaState;
+import li.cil.repack.com.naef.jnlua.LuaValueProxy;
 
 /**
  * Abstract map implementation backed by a Lua table.

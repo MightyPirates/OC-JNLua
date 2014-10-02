@@ -189,7 +189,7 @@ static int create_vm (lua_State *L) {
 	}
 	
 	/* Create a LuaState in the Java VM */
-	if (!(luastate_class = (*env)->FindClass(env, "com/naef/jnlua/LuaState"))
+	if (!(luastate_class = (*env)->FindClass(env, "li/cil/repack/com/naef/jnlua/LuaState"))
 			|| !(init_id = (*env)->GetMethodID(env, luastate_class, "<init>", "(J)V"))) {
 		return error(L, env, "JNLua not found");
 	}
@@ -203,9 +203,9 @@ static int create_vm (lua_State *L) {
 	}
 	
 	/* Load the Java module */
-	if (!(library_class  = (*env)->FindClass(env, "com/naef/jnlua/LuaState$Library"))
-			|| !(openlib_id = (*env)->GetMethodID(env, luastate_class, "openLib", "(Lcom/naef/jnlua/LuaState$Library;)V"))
-			|| !(java_id = (*env)->GetStaticFieldID(env, library_class, "JAVA", "Lcom/naef/jnlua/LuaState$Library;"))
+	if (!(library_class  = (*env)->FindClass(env, "li/cil/repack/com/naef/jnlua/LuaState$Library"))
+			|| !(openlib_id = (*env)->GetMethodID(env, luastate_class, "openLib", "(Lli/cil/repack/com/naef/jnlua/LuaState$Library;)V"))
+			|| !(java_id = (*env)->GetStaticFieldID(env, library_class, "JAVA", "Lli/cil/repack/com/naef/jnlua/LuaState$Library;"))
 			|| !(java = (*env)->GetStaticObjectField(env, library_class, java_id))) {
 		return error(L, env, "Java module not found");
 	}

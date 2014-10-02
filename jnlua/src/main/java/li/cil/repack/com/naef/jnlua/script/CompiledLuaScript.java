@@ -3,7 +3,7 @@
  * See LICENSE.txt for license terms.
  */
 
-package com.naef.jnlua.script;
+package li.cil.repack.com.naef.jnlua.script;
 
 import java.io.ByteArrayInputStream;
 

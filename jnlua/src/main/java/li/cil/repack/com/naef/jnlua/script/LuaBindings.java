@@ -3,12 +3,12 @@
  * See LICENSE.txt for license terms.
  */
 
-package com.naef.jnlua.script;
+package li.cil.repack.com.naef.jnlua.script;
 
 import javax.script.Bindings;
 
-import com.naef.jnlua.LuaState;
-import com.naef.jnlua.util.AbstractTableMap;
+import li.cil.repack.com.naef.jnlua.LuaState;
+import li.cil.repack.com.naef.jnlua.util.AbstractTableMap;
 
 /**
  * Lua bindings implementation conforming to JSR 223: Scripting for the Java

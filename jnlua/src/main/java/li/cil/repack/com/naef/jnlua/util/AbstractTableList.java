@@ -3,13 +3,13 @@
  * See LICENSE.txt for license terms.
  */
 
-package com.naef.jnlua.util;
+package li.cil.repack.com.naef.jnlua.util;
 
 import java.util.AbstractList;
 import java.util.RandomAccess;
 
-import com.naef.jnlua.LuaState;
-import com.naef.jnlua.LuaValueProxy;
+import li.cil.repack.com.naef.jnlua.LuaState;
+import li.cil.repack.com.naef.jnlua.LuaValueProxy;
 
 /**
  * Abstract list implementation backed by a Lua table.

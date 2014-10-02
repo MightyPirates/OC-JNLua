@@ -3,7 +3,7 @@
  * See LICENSE.txt for license terms.
  */
 
-package com.naef.jnlua.script;
+package li.cil.repack.com.naef.jnlua.script;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,8 +27,8 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
 
-import com.naef.jnlua.LuaException;
-import com.naef.jnlua.LuaState;
+import li.cil.repack.com.naef.jnlua.LuaException;
+import li.cil.repack.com.naef.jnlua.LuaState;
 
 /**
  * Lua script engine implementation conforming to JSR 223: Scripting for the

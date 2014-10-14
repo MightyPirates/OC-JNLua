@@ -28,6 +28,11 @@ public class DefaultConverter implements Converter {
 					+ ".rawByteArray")); */
 
 	/**
+	 * UTF-8 charset.
+	 */
+	private static final java.nio.charset.Charset UTF8 = java.nio.charset.Charset.forName("UTF-8");
+
+	/**
 	 * Static instance.
 	 */
 	private static final DefaultConverter INSTANCE = new DefaultConverter();
@@ -431,7 +436,12 @@ public class DefaultConverter implements Converter {
 				return (T) luaValueConverter.convert(luaState, index);
 			}
 			if (formalType == Object.class) {
-				return (T) luaState.toString(index);
+				final byte[] result = luaState.toByteArray(index);
+				final String string = new String(result, UTF8);
+				if (string.getBytes(UTF8).length != result.length)
+					return (T) result;
+				else
+					return (T) string;
 			}
 			break;
 		case TABLE:

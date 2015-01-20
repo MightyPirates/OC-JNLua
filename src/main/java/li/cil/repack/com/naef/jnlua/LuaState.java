@@ -131,10 +131,17 @@ public class LuaState {
 	public static final String LUA_VERSION;
 
 	static {
-		final NativeSupport.Loader loader = NativeSupport.getInstance().getLoader();
-		final NativeSupport.LoaderInfo info = loader.load();
-		REGISTRYINDEX = info.getRegistryIndex();
-		LUA_VERSION = info.getVersion();
+		NativeSupport.getInstance().getLoader().load();
+		REGISTRYINDEX = lua_registryindex();
+		LUA_VERSION = lua_version();
+	}
+
+	protected int REGISTRYINDEX() {
+		return REGISTRYINDEX;
+	}
+
+	protected String LUA_VERSION() {
+		return LUA_VERSION;
 	}
 
 	/**
@@ -583,12 +590,12 @@ public class LuaState {
 			pushJavaFunction(namedJavaFunctions[i]);
 			setField(-2, name);
 		}
-		lua_getsubtable(REGISTRYINDEX, "_LOADED");
+		lua_getsubtable(REGISTRYINDEX(), "_LOADED");
 		pushValue(-2);
 		setField(-2, moduleName);
 		pop(1);
 		if (global) {
-			rawGet(REGISTRYINDEX, RIDX_GLOBALS);
+			rawGet(REGISTRYINDEX(), RIDX_GLOBALS);
 			pushValue(-2);
 			setField(-2, moduleName);
 			pop(1);
@@ -2225,7 +2232,7 @@ public class LuaState {
 	public synchronized LuaValueProxy getProxy(int index) {
 		check();
 		pushValue(index);
-		return new LuaValueProxyImpl(ref(REGISTRYINDEX));
+		return new LuaValueProxyImpl(ref(REGISTRYINDEX()));
 	}
 
 	/**
@@ -2270,7 +2277,7 @@ public class LuaState {
 		Class<?>[] allInterfaces = new Class<?>[interfaces.length + 1];
 		System.arraycopy(interfaces, 0, allInterfaces, 0, interfaces.length);
 		allInterfaces[allInterfaces.length - 1] = LuaValueProxy.class;
-		int reference = ref(REGISTRYINDEX);
+		int reference = ref(REGISTRYINDEX());
 		try {
 			Object proxy = Proxy.newProxyInstance(classLoader, allInterfaces,
 					new LuaInvocationHandler(reference));
@@ -2278,7 +2285,7 @@ public class LuaState {
 			return (LuaValueProxy) proxy;
 		} finally {
 			if (reference >= 0) {
-				unref(REGISTRYINDEX, reference);
+				unref(REGISTRYINDEX(), reference);
 			}
 		}
 	}
@@ -2316,7 +2323,7 @@ public class LuaState {
 		LuaValueProxyRef luaValueProxyRef;
 		while ((luaValueProxyRef = (LuaValueProxyRef) proxyQueue.poll()) != null) {
 			proxySet.remove(luaValueProxyRef);
-			lua_unref(REGISTRYINDEX, luaValueProxyRef.getReference());
+			lua_unref(REGISTRYINDEX(), luaValueProxyRef.getReference());
 		}
 	}
 
@@ -2822,7 +2829,7 @@ public class LuaState {
 		@Override
 		public void pushValue() {
 			synchronized (LuaState.this) {
-				rawGet(REGISTRYINDEX, reference);
+				rawGet(REGISTRYINDEX(), reference);
 			}
 		}
 	}

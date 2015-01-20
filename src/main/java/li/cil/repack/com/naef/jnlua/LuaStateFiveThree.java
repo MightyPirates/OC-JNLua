@@ -4,11 +4,31 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class LuaState53 extends LuaState {
-	public LuaState53() {
+public class LuaStateFiveThree extends LuaState {
+	public static final int REGISTRYINDEX;
+
+	public static final String LUA_VERSION;
+
+	static {
+		NativeSupport.getInstance().getLoader().load();
+		REGISTRYINDEX = lua_registryindex();
+		LUA_VERSION = lua_version();
 	}
 
-	public LuaState53(int memory) {
+	@Override
+	protected int REGISTRYINDEX() {
+		return REGISTRYINDEX;
+	}
+
+	@Override
+	protected String LUA_VERSION() {
+		return LUA_VERSION;
+	}
+
+	public LuaStateFiveThree() {
+	}
+
+	public LuaStateFiveThree(int memory) {
 		super(memory);
 	}
 

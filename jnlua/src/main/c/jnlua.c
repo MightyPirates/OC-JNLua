@@ -136,12 +136,12 @@ static JavaVM *java_vm = NULL;
 
 /* ---- Fields ---- */
 /* lua_registryindex() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1registryindex(JNIEnv *env, jobject obj) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1registryindex(JNIEnv *env, jobject obj) {
 	return (jint) LUA_REGISTRYINDEX;
 }
 
 /* lua_version() */
-JNIEXPORT jstring JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1version(JNIEnv *env, jobject obj) {
+JNIEXPORT jstring JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1version(JNIEnv *env, jobject obj) {
 	const char *luaVersion;
 	
 	luaVersion = LUA_VERSION;
@@ -198,7 +198,7 @@ static jobject getjavastate(lua_State* L) {
 	return obj;
 }
 /* This default allocator is set while inside the controlled allocator to
-   avoid recursion when looking up the Java state from the Lua state. */
+	 avoid recursion when looking up the Java state from the Lua state. */
 static void* l_alloc_unchecked (void *ud, void *ptr, size_t osize, size_t nsize) {
 	if (nsize == 0) {
 		free(ptr);
@@ -232,7 +232,7 @@ static void* l_alloc_checked (void *ud, void *ptr, size_t osize, size_t nsize) {
 				delta = nsize - osize;
 			}
 			/* Lua expects reduction to not fail, so we must allow that even if it
-			   exceeds our current memory cap. */
+				 exceeds our current memory cap. */
 			if (total <= 0 || delta <= 0 || total - used >= delta) {
 				setluamemory(thread_env, obj, used + delta);
 				return realloc(ptr, nsize);
@@ -257,7 +257,7 @@ static lua_State *controlled_newstate (JNIEnv *env, jobject obj) {
 	}
 	return L;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1newstate (JNIEnv *env, jobject obj, int apiversion, jlong existing) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1newstate (JNIEnv *env, jobject obj, int apiversion, jlong existing) {
 	lua_State *L;
 	
 	/* Initialized? */
@@ -304,7 +304,7 @@ static int close_protected (lua_State *L) {
 	
 	return 0;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1close (JNIEnv *env, jobject obj, jboolean ownstate) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1close (JNIEnv *env, jobject obj, jboolean ownstate) {
 	lua_State *L = getluastate(env, obj), *T;
 	lua_Debug ar;
 	if (ownstate) {
@@ -346,7 +346,7 @@ static int gc_protected (lua_State *L) {
 	lua_pushinteger(L, lua_gc(L, lua_tointeger(L, 1), lua_tointeger(L, 2)));
 	return 1;
 }
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1gc (JNIEnv *env, jobject obj, jint what, jint data) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1gc (JNIEnv *env, jobject obj, jint what, jint data) {
 	lua_State *L = getluathread(env, obj);
 	jint result = 0;
 	if(checkstack(L, JNLUA_MINSTACK)) {
@@ -417,7 +417,7 @@ static int openlib_protected (lua_State *L) {
 	luaL_requiref(L, libname, openfunc, 1);
 	return 1;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1openlib (JNIEnv *env, jobject obj, jint lib) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1openlib (JNIEnv *env, jobject obj, jint lib) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)
 			&& checkarg(lib >= 0 && lib <= 10, "illegal library")) {
@@ -429,7 +429,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1openlib (
 
 /* ---- Load and dump ---- */
 /* lua_load() */
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1load (JNIEnv *env, jobject obj, jobject inputStream, jstring chunkname, jstring mode) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1load (JNIEnv *env, jobject obj, jobject inputStream, jstring chunkname, jstring mode) {
 	lua_State *L = getluathread(env, obj);
 	const char *chunkname_utf = NULL, *mode_utf = NULL;
 	Stream stream = { inputStream, NULL, NULL, 0 };
@@ -458,13 +458,13 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1load (JNI
 }
 
 /* lua_dump() */
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1dump (JNIEnv *env, jobject obj, jobject outputStream) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1dump (JNIEnv *env, jobject obj, jobject outputStream) {
 	lua_State *L = getluathread(env, obj);
 	Stream stream = { outputStream, NULL, NULL, 0 };
 	if (checkstack(L, JNLUA_MINSTACK)
 			&& checknelems(L, 1)
 			&& (stream.byte_array = newbytearray(env, 1024))) {
-		lua_dump(L, writehandler, &stream);
+		lua_dump(L, writehandler, &stream, 0);
 	}
 	if (stream.bytes) {
 		(*env)->ReleaseByteArrayElements(env, stream.byte_array, stream.bytes, JNI_ABORT);
@@ -476,7 +476,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1dump (JNI
 
 /* ---- Call ---- */
 /* lua_pcall() */
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pcall (JNIEnv *env, jobject obj, jint nargs, jint nresults) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1pcall (JNIEnv *env, jobject obj, jint nargs, jint nresults) {
 	lua_State *L = getluathread(env, obj);
 	int index, status;
 	if (checkarg(nargs >= 0, "illegal argument count")
@@ -500,7 +500,7 @@ static int getglobal_protected (lua_State *L) {
 	lua_getglobal(L, (const char*)lua_touserdata(L, 1));
 	return 1;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1getglobal (JNIEnv *env, jobject obj, jstring name) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1getglobal (JNIEnv *env, jobject obj, jstring name) {
 	lua_State *L = getluathread(env, obj);
 	const char *getglobal_name = NULL;
 	if (checkstack(L, JNLUA_MINSTACK)
@@ -519,7 +519,7 @@ static int setglobal_protected (lua_State *L) {
 	lua_setglobal(L, (const char*)lua_touserdata(L, 1));
 	return 0;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1setglobal (JNIEnv *env, jobject obj, jstring name) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1setglobal (JNIEnv *env, jobject obj, jstring name) {
 	lua_State *L = getluathread(env, obj);
 	const char *setglobal_name = NULL;
 	if (checkstack(L, JNLUA_MINSTACK)
@@ -538,7 +538,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1setglobal
 
 /* ---- Stack push ---- */
 /* lua_pushboolean() */
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pushboolean (JNIEnv *env, jobject obj, jint b) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1pushboolean (JNIEnv *env, jobject obj, jint b) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)) {
 		lua_pushboolean(L, b);
@@ -547,10 +547,10 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pushboole
 
 /* lua_pushbytearray() */
 static int pushbytearray_protected (lua_State *L) {
-	lua_pushlstring(L, (jbyte*)lua_touserdata(L, 1), (jsize)lua_tounsigned(L, 2));
+	lua_pushlstring(L, (jbyte*)lua_touserdata(L, 1), (jsize)lua_tointeger(L, 2));
 	return 1;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pushbytearray (JNIEnv *env, jobject obj, jbyteArray ba) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1pushbytearray (JNIEnv *env, jobject obj, jbyteArray ba) {
 	lua_State *L = getluathread(env, obj);
 	jbyte *pushbytearray_b = NULL;
 	jsize pushbytearray_length;
@@ -559,7 +559,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pushbytea
 		pushbytearray_length = (*env)->GetArrayLength(env, ba);
 		lua_pushcfunction(L, pushbytearray_protected);
 		lua_pushlightuserdata(L, (void*)pushbytearray_b);
-		lua_pushunsigned(L, pushbytearray_length);
+		lua_pushinteger(L, pushbytearray_length);
 		JNLUA_PCALL(L, 2, 1);
 	}
 	if (pushbytearray_b) {
@@ -568,7 +568,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pushbytea
 }
 
 /* lua_pushinteger() */
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pushinteger (JNIEnv *env, jobject obj, jint n) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1pushinteger (JNIEnv *env, jobject obj, jint n) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)) {
 		lua_pushinteger(L, n);
@@ -581,7 +581,7 @@ static int pushjavafunction_protected (lua_State *L) {
 	lua_pushcclosure(L, calljavafunction, 1);
 	return 1;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pushjavafunction (JNIEnv *env, jobject obj, jobject f) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1pushjavafunction (JNIEnv *env, jobject obj, jobject f) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)
 			&& checknotnull(f)) {
@@ -596,7 +596,7 @@ static int pushjavaobject_protected (lua_State *L) {
 	pushjavaobject(L, (jobject)lua_touserdata(L, 1));
 	return 1;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pushjavaobject (JNIEnv *env, jobject obj, jobject object) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1pushjavaobject (JNIEnv *env, jobject obj, jobject object) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)
 			&& checknotnull(object)) {
@@ -607,7 +607,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pushjavao
 }
 
 /* lua_pushnil() */
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pushnil (JNIEnv *env, jobject obj) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1pushnil (JNIEnv *env, jobject obj) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)) {
 		lua_pushnil(L);
@@ -615,7 +615,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pushnil (
 }
 
 /* lua_pushnumber() */
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pushnumber (JNIEnv *env, jobject obj, jdouble n) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1pushnumber (JNIEnv *env, jobject obj, jdouble n) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)) {
 		lua_pushnumber(L, n);
@@ -624,10 +624,10 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pushnumbe
 
 /* lua_pushstring() */
 static int pushstring_protected (lua_State *L) {
-	lua_pushlstring(L, (const char*)lua_touserdata(L, 1), (jsize)lua_tounsigned(L, 2));
+	lua_pushlstring(L, (const char*)lua_touserdata(L, 1), (jsize)lua_tointeger(L, 2));
 	return 1;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pushstring (JNIEnv *env, jobject obj, jstring s) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1pushstring (JNIEnv *env, jobject obj, jstring s) {
 	lua_State *L = getluathread(env, obj);
 	const char *pushstring_s = NULL;
 	if (checkstack(L, JNLUA_MINSTACK)
@@ -635,7 +635,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pushstrin
 		jsize pushstring_length = (*env)->GetStringUTFLength(env, s);
 		lua_pushcfunction(L, pushstring_protected);
 		lua_pushlightuserdata(L, (void*)pushstring_s);
-		lua_pushunsigned(L, pushstring_length);
+		lua_pushinteger(L, pushstring_length);
 		JNLUA_PCALL(L, 2, 1);
 	}
 	if (pushstring_s) {
@@ -645,7 +645,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pushstrin
 
 /* ---- Stack type test ---- */
 /* lua_isboolean() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1isboolean (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1isboolean (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (!validindex(L, index)) {
 		return 0;
@@ -654,7 +654,7 @@ JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1isboolean
 }
 
 /* lua_iscfunction() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1iscfunction (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1iscfunction (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	lua_CFunction c_function = NULL;
 	if (!validindex(L, index)) {
@@ -665,7 +665,7 @@ JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1iscfuncti
 }
 
 /* lua_isfunction() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1isfunction (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1isfunction (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (!validindex(L, index)) {
 		return 0;
@@ -674,7 +674,7 @@ JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1isfunctio
 }
 
 /* lua_isjavafunction() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1isjavafunction (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1isjavafunction (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (!validindex(L, index)) {
 		return 0;
@@ -687,7 +687,7 @@ static int isjavaobject_protected (lua_State *L) {
 	lua_pushboolean(L, tojavaobject(L, 1, NULL) != NULL);
 	return 1;
 }
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1isjavaobject (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1isjavaobject (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	jint isjavaobject_result = 0;
 	if (!validindex(L, index)) {
@@ -705,7 +705,7 @@ JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1isjavaobj
 }
 
 /* lua_isnil() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1isnil (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1isnil (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (!validindex(L, index)) {
 		return 0;
@@ -714,13 +714,13 @@ JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1isnil (JN
 }
 
 /* lua_isnone() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1isnone (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1isnone (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	return (jint) !validindex(L, index);
 }
 
 /* lua_isnoneornil() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1isnoneornil (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1isnoneornil (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (!validindex(L, index)) {
 		return 1;
@@ -729,7 +729,7 @@ JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1isnoneorn
 }
 
 /* lua_isnumber() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1isnumber (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1isnumber (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (!validindex(L, index)) {
 		return 0;
@@ -738,7 +738,7 @@ JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1isnumber 
 }
 
 /* lua_isstring() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1isstring (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1isstring (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (!validindex(L, index)) {
 		return 0;
@@ -747,7 +747,7 @@ JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1isstring 
 }
 
 /* lua_istable() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1istable (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1istable (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (!validindex(L, index)) {
 		return 0;
@@ -756,7 +756,7 @@ JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1istable (
 }
 
 /* lua_isthread() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1isthread (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1isthread (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (!validindex(L, index)) {
 		return 0;
@@ -770,7 +770,7 @@ static int compare_protected (lua_State *L) {
 	lua_pushboolean(L, lua_compare(L, 2, 3, lua_tointeger(L, 1)));
 	return 1;
 }
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1compare (JNIEnv *env, jobject obj, jint index1, jint index2, jint op) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1compare (JNIEnv *env, jobject obj, jint index1, jint index2, jint op) {
 	lua_State *L = getluathread(env, obj);
 	jint compare_result = 0;
 	if (!validindex(L, index1) || !validindex(L, index2)) {
@@ -791,7 +791,7 @@ JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1compare (
 }
 
 /* lua_rawequal() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1rawequal (JNIEnv *env, jobject obj, jint index1, jint index2) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1rawequal (JNIEnv *env, jobject obj, jint index1, jint index2) {
 	lua_State *L = getluathread(env, obj);
 	if (!validindex(L, index1) || !validindex(L, index2)) {
 		return (jint) 0;
@@ -800,7 +800,7 @@ JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1rawequal 
 }
 
 /* lua_rawlen() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1rawlen (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1rawlen (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	size_t result = 0;
 	if (checkindex(L, index)) {
@@ -810,7 +810,7 @@ JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1rawlen (J
 }
 
 /* lua_toboolean() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1toboolean (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1toboolean (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (!validindex(L, index)) {
 		return 0;
@@ -823,10 +823,10 @@ static int tobytearray_protected (lua_State *L) {
 	size_t tobytearray_length;
 	const char *tobytearray_result = lua_tolstring(L, 1, &tobytearray_length);
 	lua_pushlightuserdata(L, (void*)tobytearray_result);
-	lua_pushunsigned(L, tobytearray_length);
+	lua_pushinteger(L, tobytearray_length);
 	return 2;
 }
-JNIEXPORT jbyteArray JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1tobytearray (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jbyteArray JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1tobytearray (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	jbyteArray ba;
 	jbyte *b;
@@ -839,7 +839,7 @@ JNIEXPORT jbyteArray JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1tob
 		lua_pushvalue(L, index);
 		JNLUA_PCALL(L, 1, 2);
 		tobytearray_result = (const char*)lua_touserdata(L, -2);
-		tobytearray_length = lua_tounsigned(L, -1);
+		tobytearray_length = (lua_Unsigned)lua_tointeger(L, -1);
 		lua_pop(L, 2);
 	}
 	if (!tobytearray_result) {
@@ -859,7 +859,7 @@ JNIEXPORT jbyteArray JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1tob
 }
 
 /* lua_tointeger() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1tointeger (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1tointeger (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	lua_Integer result = 0;
 	if (checkindex(L, index)) {
@@ -869,7 +869,7 @@ JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1tointeger
 }
 
 /* lua_tointegerx() */
-JNIEXPORT jobject JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1tointegerx (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jobject JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1tointegerx (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	lua_Integer result = 0;
 	int isnum = 0;
@@ -889,7 +889,7 @@ static int tojavafunction_protected (lua_State *L) {
 	}
 	return 0;
 }
-JNIEXPORT jobject JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1tojavafunction (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jobject JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1tojavafunction (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	jobject tojavafunction_result = NULL;
 	if (checkstack(L, JNLUA_MINSTACK)
@@ -909,7 +909,7 @@ static int tojavaobject_protected (lua_State *L) {
 	lua_pushlightuserdata(L, (void*)tojavaobject(L, 1, NULL));
 	return 1;
 }
-JNIEXPORT jobject JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1tojavaobject (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jobject JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1tojavaobject (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	jobject tojavaobject_result = NULL;
 	if (checkstack(L, JNLUA_MINSTACK)
@@ -925,7 +925,7 @@ JNIEXPORT jobject JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1tojava
 }
 
 /* lua_tonumber() */
-JNIEXPORT jdouble JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1tonumber (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jdouble JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1tonumber (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	lua_Number result = 0.0;
 	if (checkindex(L, index)) {
@@ -935,7 +935,7 @@ JNIEXPORT jdouble JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1tonumb
 }
 
 /* lua_tonumberx() */
-JNIEXPORT jobject JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1tonumberx (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jobject JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1tonumberx (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	lua_Number result = 0.0;
 	int isnum = 0;
@@ -946,7 +946,7 @@ JNIEXPORT jobject JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1tonumb
 }
 
 /* lua_topointer() */
-JNIEXPORT jlong JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1topointer (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jlong JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1topointer (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	const void *result = NULL;
 	if (checkindex(L, index)) {
@@ -960,7 +960,7 @@ static int tostring_protected (lua_State *L) {
 	lua_pushlightuserdata(L, (void*)lua_tostring(L, 1));
 	return 1;
 }
-JNIEXPORT jstring JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1tostring (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jstring JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1tostring (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	const char *tostring_result = NULL;
 	if (checkstack(L, JNLUA_MINSTACK)
@@ -976,7 +976,7 @@ JNIEXPORT jstring JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1tostri
 }
 
 /* lua_type() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1type (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1type (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (!validindex(L, index)) {
 		return LUA_TNONE;
@@ -986,7 +986,7 @@ JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1type (JNI
 
 /* ---- Stack operations ---- */
 /* lua_absindex() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1absindex (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1absindex (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	return (jint) lua_absindex(L, index);
 }
@@ -996,7 +996,7 @@ static int arith_protected (lua_State *L) {
 	lua_arith(L, lua_tointeger(L, 1));
 	return 1;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1arith (JNIEnv *env, jobject obj, jint op) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1arith (JNIEnv *env, jobject obj, jint op) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)
 			&& checknelems(L, op != LUA_OPUNM ? 2 : 1)) {
@@ -1019,7 +1019,7 @@ static int concat_protected (lua_State *L) {
 	lua_concat(L, lua_tointeger(L, 1));
 	return 1;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1concat (JNIEnv *env, jobject obj, jint n) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1concat (JNIEnv *env, jobject obj, jint n) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)
 			&& checkarg(n >= 0, "illegal count")
@@ -1033,7 +1033,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1concat (J
 }
 
 /* lua_copy() */
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1copy (JNIEnv *env, jobject obj, jint from_index, jint to_index) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1copy (JNIEnv *env, jobject obj, jint from_index, jint to_index) {
 	lua_State *L = getluathread(env, obj);
 	if (checkindex(L, from_index)
 			&& checkindex(L, to_index)) {
@@ -1042,7 +1042,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1copy (JNI
 }
 
 /* lua_gettop() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1gettop (JNIEnv *env, jobject obj) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1gettop (JNIEnv *env, jobject obj) {
 	lua_State *L = getluathread(env, obj);
 	return (jint) lua_gettop(L);
 }
@@ -1052,7 +1052,7 @@ static int len_protected (lua_State *L) {
 	lua_len(L, 1);
 	return 1;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1len (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1len (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)
 			&& checkindex(L, index)) {
@@ -1064,7 +1064,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1len (JNIE
 }
 
 /* lua_insert() */
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1insert (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1insert (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (checkrealindex(L, index)) {
 		lua_insert(L, index);
@@ -1072,7 +1072,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1insert (J
 }
 
 /* lua_pop() */
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pop (JNIEnv *env, jobject obj, jint n) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1pop (JNIEnv *env, jobject obj, jint n) {
 	lua_State *L = getluathread(env, obj);
 	if (checkarg(n >= 0 && n <= lua_gettop(L), "illegal count")) {
 		lua_pop(L, n);
@@ -1080,7 +1080,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pop (JNIE
 }
 
 /* lua_pushvalue() */
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pushvalue (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1pushvalue (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)
 			&& checkindex(L, index)) {
@@ -1089,7 +1089,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1pushvalue
 }
 
 /* lua_remove() */
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1remove (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1remove (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (checkrealindex(L, index)) {
 		lua_remove(L, index);
@@ -1097,7 +1097,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1remove (J
 }
 
 /* lua_replace() */
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1replace (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1replace (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (checkindex(L, index)
 			&& checknelems(L, 1)) {
@@ -1106,7 +1106,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1replace (
 }
 
 /* lua_settop() */
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1settop (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1settop (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if ((index >= 0 && (index <= lua_gettop(L) || checkstack(L, index - lua_gettop(L))))
 			|| (index < 0 && checkrealindex(L, index))) {
@@ -1120,7 +1120,7 @@ static int createtable_protected (lua_State *L) {
 	lua_createtable(L, lua_tointeger(L, 1), lua_tointeger(L, 2));
 	return 1;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1createtable (JNIEnv *env, jobject obj, jint narr, jint nrec) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1createtable (JNIEnv *env, jobject obj, jint narr, jint nrec) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)
 			&& checkarg(narr >= 0, "illegal array count")
@@ -1137,7 +1137,7 @@ static int getsubtable_protected (lua_State *L) {
 	lua_pushboolean(L, luaL_getsubtable(L, 2, (const char*)lua_touserdata(L, 1)));
 	return 2;
 }
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1getsubtable (JNIEnv *env, jobject obj, jint index, jstring fname) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1getsubtable (JNIEnv *env, jobject obj, jint index, jstring fname) {
 	lua_State *L = getluathread(env, obj);
 	const char *getsubtable_fname = NULL;
 	jint getsubtable_result = 0;
@@ -1163,7 +1163,7 @@ static int getfield_protected (lua_State *L) {
 	lua_getfield(L, 2, (const char*)lua_touserdata(L, 1));
 	return 1;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1getfield (JNIEnv *env, jobject obj, jint index, jstring k) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1getfield (JNIEnv *env, jobject obj, jint index, jstring k) {
 	lua_State *L = getluathread(env, obj);
 	const char *getfield_k = NULL;
 	if (checkstack(L, JNLUA_MINSTACK)
@@ -1185,7 +1185,7 @@ static int gettable_protected (lua_State *L) {
 	lua_gettable(L, 1);
 	return 1;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1gettable (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1gettable (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)
 			&& checktype(L, index, LUA_TTABLE)) {
@@ -1203,7 +1203,7 @@ static int newtable_protected (lua_State *L) {
 	lua_newtable(L);
 	return 1;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1newtable (JNIEnv *env, jobject obj) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1newtable (JNIEnv *env, jobject obj) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)) {
 		lua_pushcfunction(L, newtable_protected);
@@ -1217,7 +1217,7 @@ static int next_protected (lua_State *L) {
 	lua_pushboolean(L, next_result);
 	return next_result ? 3 : 1;
 }
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1next (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1next (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	jint next_result = 0;
 	if (checkstack(L, JNLUA_MINSTACK)
@@ -1235,7 +1235,7 @@ JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1next (JNI
 }
 
 /* lua_rawget() */
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1rawget (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1rawget (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (checktype(L, index, LUA_TTABLE)) {
 		lua_rawget(L, index);
@@ -1243,7 +1243,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1rawget (J
 }
 
 /* lua_rawgeti() */
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1rawgeti (JNIEnv *env, jobject obj, jint index, jint n) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1rawgeti (JNIEnv *env, jobject obj, jint index, jint n) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)
 			&& checktype(L, index, LUA_TTABLE)) {
@@ -1256,7 +1256,7 @@ static int rawset_protected (lua_State *L) {
 	lua_rawset(L, 1);
 	return 0;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1rawset (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1rawset (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)
 			&& checktype(L, index, LUA_TTABLE)
@@ -1275,7 +1275,7 @@ static int rawseti_protected (lua_State *L) {
 	lua_rawseti(L, 2, lua_tointeger(L, 1));
 	return 0;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1rawseti (JNIEnv *env, jobject obj, jint index, jint n) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1rawseti (JNIEnv *env, jobject obj, jint index, jint n) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)
 			&& checktype(L, index, LUA_TTABLE)) {
@@ -1295,7 +1295,7 @@ static int settable_protected (lua_State *L) {
 	lua_settable(L, 1);
 	return 0;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1settable (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1settable (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)
 			&& checktype(L, index, LUA_TTABLE)
@@ -1314,7 +1314,7 @@ static int setfield_protected (lua_State *L) {
 	lua_setfield(L, 2, (const char*)lua_touserdata(L, 1));
 	return 0;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1setfield (JNIEnv *env, jobject obj, jint index, jstring k) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1setfield (JNIEnv *env, jobject obj, jint index, jstring k) {
 	lua_State *L = getluathread(env, obj);
 	const char *setfield_k = NULL;
 	if (checkstack(L, JNLUA_MINSTACK)
@@ -1336,7 +1336,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1setfield 
 
 /* ---- Metatable ---- */
 /* lua_getmetatable() */
-JNIEXPORT int JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1getmetatable (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT int JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1getmetatable (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	int result = 0;
 	if (lua_checkstack(L, JNLUA_MINSTACK)
@@ -1347,7 +1347,7 @@ JNIEXPORT int JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1getmetatab
 }
 
 /* lua_setmetatable() */
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1setmetatable (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1setmetatable (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	if (checkindex(L, index)
 			&& checknelems(L, 1)
@@ -1362,7 +1362,7 @@ static int getmetafield_protected (lua_State *L) {
 	lua_pushboolean(L, getmetafield_result);
 	return getmetafield_result ? 2 : 1;
 }
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1getmetafield (JNIEnv *env, jobject obj, jint index, jstring k) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1getmetafield (JNIEnv *env, jobject obj, jint index, jstring k) {
 	lua_State *L = getluathread(env, obj);
 	const char *getmetafield_k = NULL;
 	jint getmetafield_result = 0;
@@ -1393,7 +1393,7 @@ static int newthread_protected (lua_State *L) {
 	lua_xmove(L, T, 1);
 	return 1;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1newthread (JNIEnv *env, jobject obj) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1newthread (JNIEnv *env, jobject obj) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)
 			&& checktype(L, -1, LUA_TFUNCTION)) {
@@ -1404,7 +1404,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1newthread
 }
 
 /* lua_resume() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1resume (JNIEnv *env, jobject obj, jint index, jint nargs) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1resume (JNIEnv *env, jobject obj, jint index, jint nargs) {
 	lua_State *L = getluathread(env, obj), *T;
 	int status;
 	int nresults = 0;
@@ -1432,13 +1432,13 @@ JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1resume (J
 }
 
 /* lua_status() */
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1status (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1status (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	int result = 0;
 	if (checktype(L, index, LUA_TTHREAD)) {
 		result = lua_status(lua_tothread(L, index));
 	}
-	return (jint) result;	
+	return (jint) result;  
 }
 
 /* ---- Reference ---- */
@@ -1447,7 +1447,7 @@ static int ref_protected (lua_State *L) {
 	lua_pushinteger(L, luaL_ref(L, 1));
 	return 1;
 }
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1ref (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1ref (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	jint ref_result = 0;
 	if (checkstack(L, JNLUA_MINSTACK)
@@ -1469,7 +1469,7 @@ static int unref_protected (lua_State *L) {
 	luaL_unref(L, 2, lua_tointeger(L, 1));
 	return 0;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1unref (JNIEnv *env, jobject obj, jint index, jint ref) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1unref (JNIEnv *env, jobject obj, jint index, jint ref) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)
 			&& checktype(L, index, LUA_TTABLE)) {
@@ -1483,7 +1483,7 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1unref (JN
 
 /* ---- Debug ---- */
 /* lua_getstack() */
-JNIEXPORT jobject JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1getstack (JNIEnv *env, jobject obj, jint level) {
+JNIEXPORT jobject JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1getstack (JNIEnv *env, jobject obj, jint level) {
 	lua_State *L = getluathread(env, obj);
 	lua_Debug *ar = NULL;
 	jobject result = NULL;
@@ -1507,7 +1507,7 @@ static int getinfo_protected (lua_State *L) {
 	lua_pushinteger(L, lua_getinfo(L, (const char*)lua_touserdata(L, 1), getluadebug(getthreadenv(), (jobject)lua_touserdata(L, 2))));
 	return 0;
 }
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1getinfo (JNIEnv *env, jobject obj, jstring what, jobject ar) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1getinfo (JNIEnv *env, jobject obj, jstring what, jobject ar) {
 	lua_State *L = getluathread(env, obj);
 	const char *getinfo_what = NULL;
 	int getinfo_result = 0;
@@ -1540,7 +1540,7 @@ static int tablesize_protected (lua_State *L) {
 	lua_pushinteger(L, count);
 	return 1;
 }
-JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1tablesize (JNIEnv *env, jobject obj, jint index) {
+JNIEXPORT jint JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1tablesize (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);
 	jint tablesize_result;
 	if (checkstack(L, JNLUA_MINSTACK)
@@ -1573,7 +1573,7 @@ static int tablemove_protected (lua_State *L) {
 	}
 	return 0;
 }
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1tablemove (JNIEnv *env, jobject obj, jint index, jint from, jint to, jint count) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_lua_1tablemove (JNIEnv *env, jobject obj, jint index, jint from, jint to, jint count) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)
 			&& checktype(L, index, LUA_TTABLE)
@@ -1590,20 +1590,20 @@ JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_lua_1tablemove
 
 /* ---- Debug structure ---- */
 /* lua_debugfree() */
-JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_00024LuaDebug_lua_1debugfree (JNIEnv *env, jobject obj) {
+JNIEXPORT void JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_00024LuaDebug_lua_1debugfree (JNIEnv *env, jobject obj) {
 	lua_Debug *ar = getluadebug(env, obj);
 	setluadebug(env, obj, NULL);
 	free(ar);
 }
 
 /* lua_debugname() */
-JNIEXPORT jstring JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_00024LuaDebug_lua_1debugname (JNIEnv *env, jobject obj) {
+JNIEXPORT jstring JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_00024LuaDebug_lua_1debugname (JNIEnv *env, jobject obj) {
 	lua_Debug *ar = getluadebug(env, obj);
 	return ar != NULL && ar->name != NULL ? (*env)->NewStringUTF(env, ar->name) : NULL;
 }
 
 /* lua_debugnamewhat() */
-JNIEXPORT jstring JNICALL Java_li_cil_repack_com_naef_jnlua_LuaState_00024LuaDebug_lua_1debugnamewhat (JNIEnv *env, jobject obj) {
+JNIEXPORT jstring JNICALL Java_li_cil_repack_com_naef_jnlua_LuaStateFiveThree_00024LuaDebug_lua_1debugnamewhat (JNIEnv *env, jobject obj) {
 	lua_Debug *ar = getluadebug(env, obj);
 	return ar != NULL && ar->namewhat != NULL ? (*env)->NewStringUTF(env, ar->namewhat) : NULL;
 }
@@ -1619,7 +1619,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad (JavaVM *vm, void *reserved) {
 	}
 
 	/* Lookup and pin classes, fields and methods */
-	if (!(luastate_class = referenceclass(env, "li/cil/repack/com/naef/jnlua/LuaState"))
+	if (!(luastate_class = referenceclass(env, "li/cil/repack/com/naef/jnlua/LuaStateFiveThree"))
 			|| !(luastate_id = (*env)->GetFieldID(env, luastate_class, "luaState", "J"))
 			|| !(luathread_id = (*env)->GetFieldID(env, luastate_class, "luaThread", "J"))
 			|| !(luamemorytotal_id = (*env)->GetFieldID(env, luastate_class, "luaMemoryTotal", "I"))
@@ -1627,7 +1627,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad (JavaVM *vm, void *reserved) {
 			|| !(yield_id = (*env)->GetFieldID(env, luastate_class, "yield", "Z"))) {
 		return JNLUA_JNIVERSION;
 	}
-	if (!(luadebug_class = referenceclass(env, "li/cil/repack/com/naef/jnlua/LuaState$LuaDebug"))
+	if (!(luadebug_class = referenceclass(env, "li/cil/repack/com/naef/jnlua/LuaStateFiveThree$LuaDebug"))
 			|| !(luadebug_init_id = (*env)->GetMethodID(env, luadebug_class, "<init>", "(JZ)V"))
 			|| !(luadebug_field_id = (*env)->GetFieldID(env, luadebug_class, "luaDebug", "J"))) {
 		return JNLUA_JNIVERSION;
@@ -2135,7 +2135,7 @@ static int messagehandler (lua_State *L) {
 		if (isrelevant(&ar)) {
 			name = ar.name ? (*thread_env)->NewStringUTF(thread_env, ar.name) : NULL;
 			source = ar.source ? (*thread_env)->NewStringUTF(thread_env, ar.source) : NULL;
-			luastacktraceelement = (*thread_env)->NewObject(thread_env, luastacktraceelement_class,	luastacktraceelement_id, name, source, ar.currentline);
+			luastacktraceelement = (*thread_env)->NewObject(thread_env, luastacktraceelement_class,  luastacktraceelement_id, name, source, ar.currentline);
 			if (!luastacktraceelement) {
 				return 1;
 			}

@@ -67,13 +67,32 @@ public final class NativeSupport {
 	 * Loads the library.
 	 */
 	public interface Loader {
-		public void load();
+		public LoaderInfo load();
+	}
+
+	public interface LoaderInfo {
+		int getRegistryIndex();
+
+		String getVersion();
 	}
 
 	private class DefaultLoader implements Loader {
 		@Override
-		public void load() {
+		public LoaderInfo load() {
 			System.loadLibrary("jnlua52");
+			return new DefaultLoaderInfo();
+		}
+	}
+
+	private class DefaultLoaderInfo implements LoaderInfo {
+		@Override
+		public int getRegistryIndex() {
+			return LuaState.lua_registryindex();
+		}
+
+		@Override
+		public String getVersion() {
+			return LuaState.lua_version();
 		}
 	}
 }

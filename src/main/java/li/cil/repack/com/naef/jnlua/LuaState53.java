@@ -5,6 +5,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class LuaState53 extends LuaState {
+	public LuaState53() {
+	}
+
+	public LuaState53(int memory) {
+		super(memory);
+	}
+
 	public static native int lua_registryindex();
 
 	public static native String lua_version();

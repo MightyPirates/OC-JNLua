@@ -123,7 +123,7 @@ public class LuaState {
 	/**
 	 * The JNLua version. The format is &lt;major&gt;.&lt;minor&gt;.
 	 */
-	public static final String VERSION = "1.0";
+	public static final String VERSION = "1.1";
 
 	/**
 	 * The Lua version. The format is &lt;major&gt;.&lt;minor&gt;.
@@ -2618,6 +2618,13 @@ public class LuaState {
 		 * The persistence library.
 		 */
 		ERIS,
+
+		/**
+		 * The UTF-8 library.
+		 * 
+		 * @since JNLua 1.1.0
+		 */
+		UTF8,
 
 		/**
 		 * The Java library.

@@ -85,8 +85,8 @@ public class LuaStateFiveThree extends LuaState {
 	@Override
 	protected native void lua_pushnumber(double n);
 
-	@Override
-	protected native void lua_pushstring(String s);
+//	@Override
+//	protected native void lua_pushstring(String s);
 
 	@Override
 	protected native int lua_isboolean(int index);
@@ -160,8 +160,8 @@ public class LuaStateFiveThree extends LuaState {
 	@Override
 	protected native long lua_topointer(int index);
 
-	@Override
-	protected native String lua_tostring(int index);
+//	@Override
+//	protected native String lua_tostring(int index);
 
 	@Override
 	protected native int lua_type(int index);

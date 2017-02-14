@@ -14,6 +14,7 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -82,6 +83,7 @@ import li.cil.repack.com.naef.jnlua.JavaReflector.Metamethod;
  * </tr>
  * </table>
  */
+@SuppressWarnings("WeakerAccess")
 public class LuaState {
 	// -- Static
 	/**
@@ -143,6 +145,8 @@ public class LuaState {
 	protected String LUA_VERSION() {
 		return LUA_VERSION;
 	}
+
+	protected static final Charset UTF_8 = Charset.forName("UTF-8");
 
 	/**
 	 * The API version.
@@ -812,7 +816,7 @@ public class LuaState {
 	 */
 	public synchronized void pushString(String s) {
 		check();
-		lua_pushstring(s);
+		lua_pushbytearray(s.getBytes(UTF_8));
 	}
 
 	// -- Stack type test
@@ -1318,7 +1322,7 @@ public class LuaState {
 	 */
 	public synchronized String toString(int index) {
 		check();
-		return lua_tostring(index);
+		return new String(lua_tobytearray(index), UTF_8);
 	}
 
 	/**
@@ -2426,7 +2430,7 @@ public class LuaState {
 
 	protected native void lua_pushnumber(double n);
 
-	protected native void lua_pushstring(String s);
+//	protected native void lua_pushstring(String s);
 
 	protected native int lua_isboolean(int index);
 
@@ -2476,7 +2480,7 @@ public class LuaState {
 
 	protected native long lua_topointer(int index);
 
-	protected native String lua_tostring(int index);
+//	protected native String lua_tostring(int index);
 
 	protected native int lua_type(int index);
 

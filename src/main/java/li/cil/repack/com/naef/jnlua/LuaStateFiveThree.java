@@ -43,6 +43,7 @@ public class LuaStateFiveThree extends LuaState {
 	}
 
 	public LuaStateFiveThree() {
+		super();
 	}
 
 	public LuaStateFiveThree(int memory) {

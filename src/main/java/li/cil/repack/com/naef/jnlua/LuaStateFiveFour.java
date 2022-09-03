@@ -6,6 +6,7 @@ import java.io.OutputStream;
 
 public class LuaStateFiveFour extends LuaStateFiveThree {
 	public LuaStateFiveFour() {
+		super();
 	}
 
 	public LuaStateFiveFour(int memory) {

@@ -137,10 +137,6 @@ public class LuaState {
 	protected final int LUA_VERSION_NUM;
 	protected final int INTEGERWIDTH;
 
-	static {
-		NativeSupport.getInstance().getLoader().load();
-	}
-
 	protected int arith_operator_id(ArithOperator o) {
 		switch (o) {
 			case ADD: return 0;
@@ -770,7 +766,6 @@ public class LuaState {
 	 */
 	public synchronized void pushInteger(long n) {
 		check();
-		lua_pushinteger(n);
 		if (!areLongsSupported() && (n < Integer.MIN_VALUE || n > Integer.MAX_VALUE)) {
 			// The 64-bit number will not fit in a 32-bit integer. As such,
 			// we have to push it as a floating-point value.

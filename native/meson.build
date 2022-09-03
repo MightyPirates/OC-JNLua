@@ -23,7 +23,7 @@ lua52_sources = [
 #	'lua52/src/loadlib.c',
 	'lua52/src/lobject.c',
 	'lua52/src/lopcodes.c',
-#	'lua52/src/loslib.c',
+	'lua52/src/loslib.c',
 	'lua52/src/lparser.c',
 	'lua52/src/lstate.c',
 	'lua52/src/lstring.c',
@@ -58,7 +58,7 @@ lua53_sources = [
 #	'lua53/src/loadlib.c',
 	'lua53/src/lobject.c',
 	'lua53/src/lopcodes.c',
-#	'lua53/src/loslib.c',
+	'lua53/src/loslib.c',
 	'lua53/src/lparser.c',
 	'lua53/src/lstate.c',
 	'lua53/src/lstring.c',
@@ -93,7 +93,7 @@ lua54_sources = [
 #	'lua54/src/loadlib.c',
 	'lua54/src/lobject.c',
 	'lua54/src/lopcodes.c',
-#	'lua54/src/loslib.c',
+	'lua54/src/loslib.c',
 	'lua54/src/lparser.c',
 	'lua54/src/lstate.c',
 	'lua54/src/lstring.c',
@@ -138,15 +138,37 @@ jnlua_sources += ['src/loadlib_none.c']
 
 add_project_arguments('-fno-strict-aliasing', language: 'c')
 add_project_arguments('-D_REENTRANT', language: 'c')
-add_project_arguments('-DLUA_USE_POSIX', language: 'c')
+if host_machine.system() == 'linux'
+	add_project_arguments('-DLUA_USE_LINUX', language: 'c')
+elif host_machine.system() == 'darwin'
+	add_project_arguments('-DLUA_USE_MACOSX', language: 'c')
+elif host_machine.system() == 'windows'
+	add_project_arguments('-DLUA_WIN', language: 'c')
+else
+	add_project_arguments('-DLUA_USE_POSIX', language: 'c')
+endif
 if get_option('buildtype').startswith('release')
 	add_project_arguments('-DNDEBUG', language: 'c')
 endif
 
-lib_suffix = '-' + target_machine.system() + '-' + target_machine.cpu_family()
+lib_suffix = '-' + host_machine.system() + '-' + host_machine.cpu_family()
 
 math_dep = compiler.find_library('m', required: true)
-jni_dep = dependency('jni', version: '>= 1.8.0', modules: ['jvm'], required: true)
+# jni_dep = dependency('jni', version: '>= 1.8.0', modules: ['jvm'], required: true)
+jni_include_dir = join_paths('jni', host_machine.system(), host_machine.cpu_family(), 'include')
+jni_lib_dir = join_paths(meson.source_root(), 'jni', host_machine.system(), host_machine.cpu_family(), 'lib')
+if host_machine.system() == 'windows'
+	jni_lib_file = join_paths(jni_lib_dir, 'jvm.dll')
+	jni_dep = declare_dependency(
+		link_args: [jni_lib_file],
+		include_directories: include_directories(jni_include_dir)
+	)
+else
+	jni_dep = declare_dependency(
+		link_args: ['-L' + jni_lib_dir, '-ljvm'],
+		include_directories: include_directories(jni_include_dir)
+	)
+endif
 
 native52_sources = lua52_sources
 native52_sources += jnlua_sources

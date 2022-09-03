@@ -425,11 +425,11 @@ static int openlib_protected (lua_State *L) {
 		libname = LUA_IOLIBNAME;
 		openfunc = luaopen_io;
 		break;
+#endif
 	case 5:
 		libname = LUA_OSLIBNAME;
 		openfunc = luaopen_os;
 		break;
-#endif
 	case 6:
 		libname = LUA_STRLIBNAME;
 		openfunc = luaopen_string;
@@ -472,8 +472,8 @@ static int openlib_isvalid(jint lib) {
 #endif
 	if (lib == 11) return 1;
 #endif
-#ifdef JNLUA_COMPLETE
-	if (lib == 1 || lib == 4 || lib == 5) return 0;
+#ifndef JNLUA_COMPLETE
+	if (lib == 1 || lib == 4) return 0;
 #endif
 	return (lib >= 0 && lib <= 10);
 }

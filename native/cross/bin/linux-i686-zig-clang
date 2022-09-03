@@ -1,0 +1,2 @@
+#!/bin/sh
+zig cc -target i386-linux-gnu.2.17 $@

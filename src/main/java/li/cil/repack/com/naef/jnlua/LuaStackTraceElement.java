@@ -5,6 +5,8 @@
 
 package li.cil.repack.com.naef.jnlua;
 
+import java.util.Objects;
+
 /**
  * Represents an execution point in a Lua stack trace.
  */
@@ -74,8 +76,8 @@ public class LuaStackTraceElement {
 	@Override
 	public int hashCode() {
 		int result = functionName != null ? functionName.hashCode() : 0;
-		result = result * 65599 + sourceName != null ? sourceName.hashCode()
-				: 0;
+		result = result * 65599 + (sourceName != null ? sourceName.hashCode()
+				: 0);
 		result = result * 65599 + lineNumber;
 		return result;
 	}
@@ -89,14 +91,14 @@ public class LuaStackTraceElement {
 			return false;
 		}
 		LuaStackTraceElement other = (LuaStackTraceElement) obj;
-		return safeEquals(functionName, other.functionName)
-				&& safeEquals(sourceName, other.sourceName)
+		return Objects.equals(functionName, other.functionName)
+				&& Objects.equals(sourceName, other.sourceName)
 				&& lineNumber == other.lineNumber;
 	}
 
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (functionName != null) {
 			sb.append(functionName);
 		} else {
@@ -114,13 +116,5 @@ public class LuaStackTraceElement {
 		}
 		sb.append(')');
 		return sb.toString();
-	}
-
-	// -- Private methods
-	/**
-	 * Returns whether two objects are equal, handling <code>null</code>.
-	 */
-	private boolean safeEquals(Object a, Object b) {
-		return a == b || a != null && a.equals(b);
 	}
 }

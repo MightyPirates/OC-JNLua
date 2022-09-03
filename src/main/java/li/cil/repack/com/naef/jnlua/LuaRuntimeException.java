@@ -92,7 +92,8 @@ public class LuaRuntimeException extends LuaException {
 		synchronized (s) {
 			s.println(this);
 			for (int i = 0; i < luaStackTrace.length; i++) {
-				s.println("\tat " + luaStackTrace[i]);
+				s.print("\tat ");
+				s.println(luaStackTrace[i]);
 			}
 		}
 	}
@@ -108,7 +109,8 @@ public class LuaRuntimeException extends LuaException {
 		synchronized (s) {
 			s.println(this);
 			for (int i = 0; i < luaStackTrace.length; i++) {
-				s.println("\tat " + luaStackTrace[i]);
+				s.print("\tat ");
+				s.println(luaStackTrace[i]);
 			}
 		}
 	}

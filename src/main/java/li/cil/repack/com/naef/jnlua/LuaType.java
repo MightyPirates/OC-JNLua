@@ -5,6 +5,8 @@
 
 package li.cil.repack.com.naef.jnlua;
 
+import java.util.Locale;
+
 /**
  * Represents a Lua type.
  */
@@ -63,6 +65,6 @@ public enum LuaType {
 	 * @return the display text
 	 */
 	public String displayText() {
-		return toString().toLowerCase();
+		return toString().toLowerCase(Locale.ROOT);
 	}
 }

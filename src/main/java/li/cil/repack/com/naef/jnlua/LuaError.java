@@ -49,7 +49,7 @@ class LuaError {
 	// -- Object methods
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (message != null) {
 			sb.append(message);
 		}

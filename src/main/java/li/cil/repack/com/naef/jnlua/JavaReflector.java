@@ -5,6 +5,8 @@
 
 package li.cil.repack.com.naef.jnlua;
 
+import java.util.Locale;
+
 /**
  * Reflects Java objects for access from Lua.
  * 
@@ -147,7 +149,7 @@ public interface JavaReflector {
 		 * @return the metamethod name
 		 */
 		public String getMetamethodName() {
-			return "__" + toString().toLowerCase();
+			return "__" + toString().toLowerCase(Locale.ROOT);
 		}
 	};
 }

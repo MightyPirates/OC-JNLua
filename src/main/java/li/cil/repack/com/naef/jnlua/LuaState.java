@@ -15,7 +15,9 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import li.cil.repack.com.naef.jnlua.JavaReflector.Metamethod;
@@ -169,8 +171,6 @@ public class LuaState {
 			default: return -1;
 		}
 	}
-
-	protected static final Charset UTF_8 = Charset.forName("UTF-8");
 
 	/**
 	 * The API version.
@@ -856,7 +856,7 @@ public class LuaState {
 	 */
 	public synchronized void pushString(String s) {
 		check();
-		lua_pushbytearray(s.getBytes(UTF_8));
+		lua_pushbytearray(s.getBytes(StandardCharsets.UTF_8));
 	}
 
 	// -- Stack type test
@@ -1362,7 +1362,7 @@ public class LuaState {
 	 */
 	public synchronized String toString(int index) {
 		check();
-		return new String(lua_tobytearray(index), UTF_8);
+		return new String(lua_tobytearray(index), StandardCharsets.UTF_8);
 	}
 
 	/**
@@ -2090,7 +2090,7 @@ public class LuaState {
 		if (value == null) {
 			throw getArgTypeException(index, LuaType.NUMBER);
 		}
-		return value.longValue();
+		return value;
 	}
 
 	/**
@@ -2185,7 +2185,7 @@ public class LuaState {
 		if (number == null) {
 			throw getArgTypeException(index, LuaType.NUMBER);
 		}
-		return number.doubleValue();
+		return number;
 	}
 
 	/**
@@ -2430,7 +2430,7 @@ public class LuaState {
 		final LuaType have = type(index);
 		return getArgException(index,
 				String.format("%s expected, got %s", type.toString()
-						.toLowerCase(), have != null ? type(index).toString().toLowerCase() : "none"));
+						.toLowerCase(Locale.ROOT), have != null ? type(index).toString().toLowerCase() : "none"));
 	}
 
 	/**

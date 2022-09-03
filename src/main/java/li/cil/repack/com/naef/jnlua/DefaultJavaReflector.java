@@ -1238,7 +1238,7 @@ public class DefaultJavaReflector implements JavaReflector {
 		 */
 		private LuaRuntimeException getSignatureAmbivalenceException(
 				LuaState luaState, Set<Invocable> candidates) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append(String.format(
 					"%s '%s(%s)' on class %s is ambivalent among ", getWhat(),
 					getName(), getLuaSignatureString(luaState),
@@ -1261,7 +1261,7 @@ public class DefaultJavaReflector implements JavaReflector {
 		 */
 		private String getLuaSignatureString(LuaState luaState) {
 			int argCount = luaState.getTop() - 1;
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < argCount; i++) {
 				if (i > 0) {
 					sb.append(", ");
@@ -1275,7 +1275,7 @@ public class DefaultJavaReflector implements JavaReflector {
 		 * Returns a Java type signature string for diagnostic messages.
 		 */
 		private String getJavaSignatureString(Class<?>[] types) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < types.length; i++) {
 				if (i > 0) {
 					sb.append(", ");

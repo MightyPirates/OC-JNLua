@@ -50,6 +50,18 @@ public class LuaStateFiveThree extends LuaState {
 	}
 
 	@Override
+	protected native int lua_integerwidth();
+
+	@Override
+	protected native int lua_registryindex();
+
+	@Override
+	protected native String lua_version();
+
+	@Override
+	protected native int lua_versionnum();
+
+	@Override
 	protected native void lua_newstate(int apiversion, long luaState);
 
 	@Override
@@ -78,13 +90,13 @@ public class LuaStateFiveThree extends LuaState {
 	protected native void lua_setglobal(String name);
 
 	@Override
-	protected native void lua_pushboolean(int b);
+	protected native void lua_pushboolean(boolean b);
 
 	@Override
 	protected native void lua_pushbytearray(byte[] b);
 	
 	@Override
-	protected native void lua_pushinteger(int n);
+	protected native void lua_pushinteger(long n);
 
 	@Override
 	protected native void lua_pushjavafunction(JavaFunction f);
@@ -102,40 +114,40 @@ public class LuaStateFiveThree extends LuaState {
 //	protected native void lua_pushstring(String s);
 
 	@Override
-	protected native int lua_isboolean(int index);
+	protected native boolean lua_isboolean(int index);
 
 	@Override
-	protected native int lua_iscfunction(int index);
+	protected native boolean lua_iscfunction(int index);
 
 	@Override
-	protected native int lua_isfunction(int index);
+	protected native boolean lua_isfunction(int index);
 
 	@Override
-	protected native int lua_isjavafunction(int index);
+	protected native boolean lua_isjavafunction(int index);
 
 	@Override
-	protected native int lua_isjavaobject(int index);
+	protected native boolean lua_isjavaobject(int index);
 
 	@Override
-	protected native int lua_isnil(int index);
+	protected native boolean lua_isnil(int index);
 
 	@Override
-	protected native int lua_isnone(int index);
+	protected native boolean lua_isnone(int index);
 
 	@Override
-	protected native int lua_isnoneornil(int index);
+	protected native boolean lua_isnoneornil(int index);
 
 	@Override
-	protected native int lua_isnumber(int index);
+	protected native boolean lua_isnumber(int index);
 
 	@Override
-	protected native int lua_isstring(int index);
+	protected native boolean lua_isstring(int index);
 
 	@Override
-	protected native int lua_istable(int index);
+	protected native boolean lua_istable(int index);
 
 	@Override
-	protected native int lua_isthread(int index);
+	protected native boolean lua_isthread(int index);
 
 	@Override
 	protected native int lua_compare(int index1, int index2, int operator);
@@ -147,16 +159,16 @@ public class LuaStateFiveThree extends LuaState {
 	protected native int lua_rawlen(int index);
 
 	@Override
-	protected native int lua_toboolean(int index);
+	protected native boolean lua_toboolean(int index);
 
 	@Override
 	protected native byte[] lua_tobytearray(int index);
 	
 	@Override
-	protected native int lua_tointeger(int index);
+	protected native long lua_tointeger(int index);
 
 	@Override
-	protected native Integer lua_tointegerx(int index);
+	protected native Long lua_tointegerx(int index);
 
 	@Override
 	protected native JavaFunction lua_tojavafunction(int index);

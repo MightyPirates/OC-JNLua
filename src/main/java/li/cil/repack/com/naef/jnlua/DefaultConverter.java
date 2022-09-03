@@ -149,7 +149,7 @@ public class DefaultConverter implements Converter {
 		LuaValueConverter<Integer> integerConverter = new LuaValueConverter<Integer>() {
 			@Override
 			public Integer convert(LuaState luaState, int index) {
-				return Integer.valueOf(luaState.toInteger(index));
+				return Integer.valueOf((int) luaState.toInteger(index));
 			}
 		};
 		LUA_VALUE_CONVERTERS.put(Integer.class, integerConverter);
@@ -157,7 +157,7 @@ public class DefaultConverter implements Converter {
 		LuaValueConverter<Long> longConverter = new LuaValueConverter<Long>() {
 			@Override
 			public Long convert(LuaState luaState, int index) {
-				return Long.valueOf((long) luaState.toNumber(index));
+				return Long.valueOf(luaState.toInteger(index));
 			}
 		};
 		LUA_VALUE_CONVERTERS.put(Long.class, longConverter);
@@ -231,27 +231,29 @@ public class DefaultConverter implements Converter {
 			}
 		};
 		JAVA_OBJECT_CONVERTERS.put(Boolean.class, booleanConverter);
-		JAVA_OBJECT_CONVERTERS.put(Boolean.TYPE, booleanConverter);
-		JavaObjectConverter<Number> numberConverter = new JavaObjectConverter<Number>() {
-			@Override
-			public void convert(LuaState luaState, Number number) {
-				luaState.pushNumber(number.doubleValue());
-			}
-		};
-		JAVA_OBJECT_CONVERTERS.put(Byte.class, numberConverter);
-		JAVA_OBJECT_CONVERTERS.put(Byte.TYPE, numberConverter);
-		JAVA_OBJECT_CONVERTERS.put(Short.class, numberConverter);
-		JAVA_OBJECT_CONVERTERS.put(Short.TYPE, numberConverter);
-		JAVA_OBJECT_CONVERTERS.put(Integer.class, numberConverter);
-		JAVA_OBJECT_CONVERTERS.put(Integer.TYPE, numberConverter);
-		JAVA_OBJECT_CONVERTERS.put(Long.class, numberConverter);
-		JAVA_OBJECT_CONVERTERS.put(Long.TYPE, numberConverter);
+		JAVA_OBJECT_CONVERTERS.put(Boolean.TYPE, booleanConverter);        JavaObjectConverter<Number> integerConverter = (luaState, number) -> luaState.pushInteger(number.longValue());
+		JAVA_OBJECT_CONVERTERS.put(Byte.class, integerConverter);
+		JAVA_OBJECT_CONVERTERS.put(Byte.TYPE, integerConverter);
+		JAVA_OBJECT_CONVERTERS.put(Short.class, integerConverter);
+		JAVA_OBJECT_CONVERTERS.put(Short.TYPE, integerConverter);
+		JAVA_OBJECT_CONVERTERS.put(Integer.class, integerConverter);
+		JAVA_OBJECT_CONVERTERS.put(Integer.TYPE, integerConverter);
+		JAVA_OBJECT_CONVERTERS.put(Long.class, integerConverter);
+		JAVA_OBJECT_CONVERTERS.put(Long.TYPE, integerConverter);
+		JavaObjectConverter<Number> numberConverter = (luaState, number) -> luaState.pushNumber(number.doubleValue());
 		JAVA_OBJECT_CONVERTERS.put(Float.class, numberConverter);
 		JAVA_OBJECT_CONVERTERS.put(Float.TYPE, numberConverter);
 		JAVA_OBJECT_CONVERTERS.put(Double.class, numberConverter);
 		JAVA_OBJECT_CONVERTERS.put(Double.TYPE, numberConverter);
-		JAVA_OBJECT_CONVERTERS.put(BigInteger.class, numberConverter);
 		JAVA_OBJECT_CONVERTERS.put(BigDecimal.class, numberConverter);
+		JavaObjectConverter<BigInteger> bigIntegerConverter = (luaState, number) -> {
+			try {
+				luaState.pushInteger(number.longValueExact());
+			} catch (ArithmeticException e) {
+				luaState.pushNumber(number.doubleValue());
+			}
+		};
+		JAVA_OBJECT_CONVERTERS.put(BigInteger.class, bigIntegerConverter);
 		JavaObjectConverter<Character> characterConverter = new JavaObjectConverter<Character>() {
 			@Override
 			public void convert(LuaState luaState, Character character) {

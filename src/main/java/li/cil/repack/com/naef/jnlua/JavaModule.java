@@ -199,12 +199,12 @@ public class JavaModule {
 				}
 				break;
 			case 1:
-				object = Array.newInstance(clazz, luaState.checkInteger(2));
+				object = Array.newInstance(clazz, luaState.checkInt32(2));
 				break;
 			default:
 				int[] dimensions = new int[dimensionCount];
 				for (int i = 0; i < dimensionCount; i++) {
-					dimensions[i] = luaState.checkInteger(i + 2);
+					dimensions[i] = luaState.checkInt32(i + 2);
 				}
 				object = Array.newInstance(clazz, dimensions);
 			}
@@ -600,8 +600,8 @@ public class JavaModule {
 								"attempt to read list with %s accessor",
 								luaState.typeName(2)));
 					}
-					int index = luaState.toInteger(2);
-					luaState.pushJavaObject(luaList.getList().get(index - 1));
+					long index = luaState.toInteger(2);
+					luaState.pushJavaObject(luaList.getList().get((int) (index - 1)));
 					return 1;
 				}
 			}
@@ -619,17 +619,17 @@ public class JavaModule {
 								"attempt to write list with %s accessor",
 								luaState.typeName(2)));
 					}
-					int index = luaState.toInteger(2);
+					long index = luaState.toInteger(2);
 					Object value = luaState.toJavaObject(3, Object.class);
 					if (value != null) {
 						int size = luaList.getList().size();
 						if (index - 1 != size) {
-							luaList.getList().set(index - 1, value);
+							luaList.getList().set((int) (index - 1), value);
 						} else {
 							luaList.getList().add(value);
 						}
 					} else {
-						luaList.getList().remove(index - 1);
+						luaList.getList().remove((int) (index - 1));
 					}
 					return 0;
 				}

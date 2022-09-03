@@ -133,17 +133,10 @@ public class LuaState {
 	protected final String LUA_VERSION;
 
 	protected final int LUA_VERSION_NUM;
+	protected final int INTEGERWIDTH;
 
 	static {
 		NativeSupport.getInstance().getLoader().load();
-	}
-
-	protected int REGISTRYINDEX() {
-		return REGISTRYINDEX;
-	}
-
-	protected String LUA_VERSION() {
-		return LUA_VERSION;
 	}
 
 	protected int arith_operator_id(ArithOperator o) {
@@ -300,6 +293,7 @@ public class LuaState {
 		REGISTRYINDEX = lua_registryindex();
 		LUA_VERSION = lua_version();
 		LUA_VERSION_NUM = lua_versionnum();
+		INTEGERWIDTH = lua_integerwidth();
 
 		ownState = luaState == 0L;
 		luaMemoryTotal = memory;
@@ -633,12 +627,12 @@ public class LuaState {
 			pushJavaFunction(namedJavaFunctions[i]);
 			setField(-2, name);
 		}
-		lua_getsubtable(REGISTRYINDEX(), "_LOADED");
+		lua_getsubtable(REGISTRYINDEX, "_LOADED");
 		pushValue(-2);
 		setField(-2, moduleName);
 		pop(1);
 		if (global) {
-			rawGet(REGISTRYINDEX(), RIDX_GLOBALS);
+			rawGet(REGISTRYINDEX, RIDX_GLOBALS);
 			pushValue(-2);
 			setField(-2, moduleName);
 			pop(1);
@@ -754,7 +748,7 @@ public class LuaState {
 	 */
 	public synchronized void pushBoolean(boolean b) {
 		check();
-		lua_pushboolean(b ? 1 : 0);
+		lua_pushboolean(b);
 	}
 
 	/**
@@ -774,9 +768,16 @@ public class LuaState {
 	 * @param n
 	 *            the integer value to push
 	 */
-	public synchronized void pushInteger(int n) {
+	public synchronized void pushInteger(long n) {
 		check();
 		lua_pushinteger(n);
+		if (!areLongsSupported() && (n < Integer.MIN_VALUE || n > Integer.MAX_VALUE)) {
+			// The 64-bit number will not fit in a 32-bit integer. As such,
+			// we have to push it as a floating-point value.
+			lua_pushnumber(n);
+		} else {
+			lua_pushinteger(n);
+		}
 	}
 
 	/**
@@ -872,7 +873,7 @@ public class LuaState {
 	 */
 	public synchronized boolean isBoolean(int index) {
 		check();
-		return lua_isboolean(index) != 0;
+		return lua_isboolean(index);
 	}
 
 	/**
@@ -888,7 +889,7 @@ public class LuaState {
 	 */
 	public synchronized boolean isCFunction(int index) {
 		check();
-		return lua_iscfunction(index) != 0;
+		return lua_iscfunction(index);
 	}
 
 	/**
@@ -905,7 +906,7 @@ public class LuaState {
 	 */
 	public synchronized boolean isFunction(int index) {
 		check();
-		return lua_isfunction(index) != 0;
+		return lua_isfunction(index);
 	}
 
 	/**
@@ -922,7 +923,7 @@ public class LuaState {
 	 */
 	public synchronized boolean isJavaFunction(int index) {
 		check();
-		return lua_isjavafunction(index) != 0;
+		return lua_isjavafunction(index);
 	}
 
 	/**
@@ -966,7 +967,7 @@ public class LuaState {
 	 */
 	public synchronized boolean isJavaObjectRaw(int index) {
 		check();
-		return lua_isjavaobject(index) != 0;
+		return lua_isjavaobject(index);
 	}
 
 	/**
@@ -983,7 +984,7 @@ public class LuaState {
 	 */
 	public synchronized boolean isNil(int index) {
 		check();
-		return lua_isnil(index) != 0;
+		return lua_isnil(index);
 	}
 
 	/**
@@ -999,7 +1000,7 @@ public class LuaState {
 	 */
 	public synchronized boolean isNone(int index) {
 		check();
-		return lua_isnone(index) != 0;
+		return lua_isnone(index);
 	}
 
 	/**
@@ -1017,7 +1018,7 @@ public class LuaState {
 	 */
 	public synchronized boolean isNoneOrNil(int index) {
 		check();
-		return lua_isnoneornil(index) != 0;
+		return lua_isnoneornil(index);
 	}
 
 	/**
@@ -1034,7 +1035,7 @@ public class LuaState {
 	 */
 	public synchronized boolean isNumber(int index) {
 		check();
-		return lua_isnumber(index) != 0;
+		return lua_isnumber(index);
 	}
 
 	/**
@@ -1051,7 +1052,7 @@ public class LuaState {
 	 */
 	public synchronized boolean isString(int index) {
 		check();
-		return lua_isstring(index) != 0;
+		return lua_isstring(index);
 	}
 
 	/**
@@ -1067,7 +1068,7 @@ public class LuaState {
 	 */
 	public synchronized boolean isTable(int index) {
 		check();
-		return lua_istable(index) != 0;
+		return lua_istable(index);
 	}
 
 	/**
@@ -1083,7 +1084,7 @@ public class LuaState {
 	 */
 	public synchronized boolean isThread(int index) {
 		check();
-		return lua_isthread(index) != 0;
+		return lua_isthread(index);
 	}
 
 	// -- Stack query
@@ -1203,7 +1204,7 @@ public class LuaState {
 	 */
 	public synchronized boolean toBoolean(int index) {
 		check();
-		return lua_toboolean(index) != 0;
+		return lua_toboolean(index);
 	}
 
 	/**
@@ -1230,7 +1231,7 @@ public class LuaState {
 	 *            the stack index
 	 * @return the integer representation, or <code>0</code>
 	 */
-	public synchronized int toInteger(int index) {
+	public synchronized long toInteger(int index) {
 		check();
 		return lua_tointeger(index);
 	}
@@ -1245,7 +1246,7 @@ public class LuaState {
 	 * @return the integer representation, or <code>null</code>
 	 * @since JNLua 1.0.2
 	 */
-	public synchronized Integer toIntegerX(int index) {
+	public synchronized Long toIntegerX(int index) {
 		check();
 		return lua_tointegerx(index);
 	}
@@ -2034,18 +2035,62 @@ public class LuaState {
 	 * string convertible to a number. If so, the argument value is returned as
 	 * an integer. Otherwise, the method throws a Lua runtime exception with a
 	 * descriptive error message.
+	 *
+	 * @param index
+	 *            the argument index
+	 * @return the integer value
+	 */
+	public synchronized int checkInt32(int index) {
+		check();
+		Long value = toIntegerX(index);
+		if (value == null) {
+			throw getArgTypeException(index, LuaType.NUMBER);
+		}
+		if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
+			throw getArgException(index, "out of range");
+		}
+		return value.intValue();
+	}
+
+	/**
+	 * Checks if the value of the specified function argument is a number or a
+	 * string convertible to a number. If so, the argument value is returned as
+	 * an integer. If the specified stack index is non-valid or if its value is
+	 * <code>nil</code>, the method returns the specified default value.
+	 * Otherwise, the method throws a Lua runtime exception with a descriptive
+	 * error message.
+	 *
+	 * @param index
+	 *            the argument index
+	 * @param d
+	 *            the default value
+	 * @return the integer value, or the default value
+	 */
+	public synchronized int checkInt32(int index, int d) {
+		check();
+		if (isNoneOrNil(index)) {
+			return d;
+		}
+		return checkInt32(index);
+	}
+
+	/**
+	 * Checks if the value of the specified function argument is a number or a
+	 * string convertible to a number. If so, the argument value is returned as
+	 * an integer. Otherwise, the method throws a Lua runtime exception with a
+	 * descriptive error message.
 	 * 
 	 * @param index
 	 *            the argument index
 	 * @return the integer value
 	 */
-	public synchronized int checkInteger(int index) {
+	public synchronized long checkInteger(int index) {
 		check();
-		Integer integer = toIntegerX(index);
-		if (integer == null) {
+		Long value = toIntegerX(index);
+		if (value == null) {
 			throw getArgTypeException(index, LuaType.NUMBER);
 		}
-		return integer.intValue();
+		return value.longValue();
 	}
 
 	/**
@@ -2062,7 +2107,7 @@ public class LuaState {
 	 *            the default value
 	 * @return the integer value, or the default value
 	 */
-	public synchronized int checkInteger(int index, int d) {
+	public synchronized long checkInteger(int index, long d) {
 		check();
 		if (isNoneOrNil(index)) {
 			return d;
@@ -2275,7 +2320,7 @@ public class LuaState {
 	public synchronized LuaValueProxy getProxy(int index) {
 		check();
 		pushValue(index);
-		return new LuaValueProxyImpl(ref(REGISTRYINDEX()));
+		return new LuaValueProxyImpl(ref(REGISTRYINDEX));
 	}
 
 	/**
@@ -2320,7 +2365,7 @@ public class LuaState {
 		Class<?>[] allInterfaces = new Class<?>[interfaces.length + 1];
 		System.arraycopy(interfaces, 0, allInterfaces, 0, interfaces.length);
 		allInterfaces[allInterfaces.length - 1] = LuaValueProxy.class;
-		int reference = ref(REGISTRYINDEX());
+		int reference = ref(REGISTRYINDEX);
 		try {
 			Object proxy = Proxy.newProxyInstance(classLoader, allInterfaces,
 					new LuaInvocationHandler(reference));
@@ -2328,9 +2373,17 @@ public class LuaState {
 			return (LuaValueProxy) proxy;
 		} finally {
 			if (reference >= 0) {
-				unref(REGISTRYINDEX(), reference);
+				unref(REGISTRYINDEX, reference);
 			}
 		}
+	}
+
+	public int getIntegerWidth() {
+		return INTEGERWIDTH;
+	}
+
+	public boolean areLongsSupported() {
+		return INTEGERWIDTH >= 8;
 	}
 
 	// -- Private methods
@@ -2366,7 +2419,7 @@ public class LuaState {
 		LuaValueProxyRef luaValueProxyRef;
 		while ((luaValueProxyRef = (LuaValueProxyRef) proxyQueue.poll()) != null) {
 			proxySet.remove(luaValueProxyRef);
-			lua_unref(REGISTRYINDEX(), luaValueProxyRef.getReference());
+			lua_unref(REGISTRYINDEX, luaValueProxyRef.getReference());
 		}
 	}
 
@@ -2386,7 +2439,7 @@ public class LuaState {
 	 * @param extraMsg
 	 * @return
 	 */
-	private LuaRuntimeException getArgException(int index, String extraMsg) {
+	LuaRuntimeException getArgException(int index, String extraMsg) {
 		check();
 
 		// Get execution point
@@ -2432,6 +2485,8 @@ public class LuaState {
 	}
 
 	// -- Native methods
+	protected native int lua_integerwidth();
+
 	protected native int lua_registryindex();
 
 	protected native String lua_version();
@@ -2457,11 +2512,11 @@ public class LuaState {
 
 	protected native void lua_setglobal(String name);
 
-	protected native void lua_pushboolean(int b);
+	protected native void lua_pushboolean(boolean b);
 
 	protected native void lua_pushbytearray(byte[] b);
 	
-	protected native void lua_pushinteger(int n);
+	protected native void lua_pushinteger(long n);
 
 	protected native void lua_pushjavafunction(JavaFunction f);
 
@@ -2473,29 +2528,29 @@ public class LuaState {
 
 //	protected native void lua_pushstring(String s);
 
-	protected native int lua_isboolean(int index);
+	protected native boolean lua_isboolean(int index);
 
-	protected native int lua_iscfunction(int index);
+	protected native boolean lua_iscfunction(int index);
 
-	protected native int lua_isfunction(int index);
+	protected native boolean lua_isfunction(int index);
 
-	protected native int lua_isjavafunction(int index);
+	protected native boolean lua_isjavafunction(int index);
 
-	protected native int lua_isjavaobject(int index);
+	protected native boolean lua_isjavaobject(int index);
 
-	protected native int lua_isnil(int index);
+	protected native boolean lua_isnil(int index);
 
-	protected native int lua_isnone(int index);
+	protected native boolean lua_isnone(int index);
 
-	protected native int lua_isnoneornil(int index);
+	protected native boolean lua_isnoneornil(int index);
 
-	protected native int lua_isnumber(int index);
+	protected native boolean lua_isnumber(int index);
 
-	protected native int lua_isstring(int index);
+	protected native boolean lua_isstring(int index);
 
-	protected native int lua_istable(int index);
+	protected native boolean lua_istable(int index);
 
-	protected native int lua_isthread(int index);
+	protected native boolean lua_isthread(int index);
 
 	protected native int lua_compare(int index1, int index2, int operator);
 
@@ -2503,13 +2558,13 @@ public class LuaState {
 
 	protected native int lua_rawlen(int index);
 
-	protected native int lua_toboolean(int index);
+	protected native boolean lua_toboolean(int index);
 
 	protected native byte[] lua_tobytearray(int index);
 	
-	protected native int lua_tointeger(int index);
+	protected native long lua_tointeger(int index);
 
-	protected native Integer lua_tointegerx(int index);
+	protected native Long lua_tointegerx(int index);
 
 	protected native JavaFunction lua_tojavafunction(int index);
 
@@ -2949,7 +3004,7 @@ public class LuaState {
 		@Override
 		public void pushValue() {
 			synchronized (LuaState.this) {
-				rawGet(REGISTRYINDEX(), reference);
+				rawGet(REGISTRYINDEX, reference);
 			}
 		}
 	}

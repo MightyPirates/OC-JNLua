@@ -72,8 +72,44 @@ lua53_sources = [
 	'lua53/src/lzio.c'
 ]
 
+lua54_sources = [
+	'lua54/src/lapi.c',
+	'lua54/src/lauxlib.c',
+	'lua54/src/lbaselib.c',
+	'lua54/src/lcode.c',
+	'lua54/src/lcorolib.c',
+	'lua54/src/lctype.c',
+	'lua54/src/ldblib.c',
+	'lua54/src/ldebug.c',
+	'lua54/src/ldo.c',
+	'lua54/src/ldump.c',
+	'lua54/src/lfunc.c',
+	'lua54/src/lgc.c',
+	'lua54/src/linit.c',
+	'lua54/src/liolib.c',
+	'lua54/src/llex.c',
+	'lua54/src/lmathlib.c',
+	'lua54/src/lmem.c',
+	'lua54/src/loadlib.c',
+	'lua54/src/lobject.c',
+	'lua54/src/lopcodes.c',
+	'lua54/src/loslib.c',
+	'lua54/src/lparser.c',
+	'lua54/src/lstate.c',
+	'lua54/src/lstring.c',
+	'lua54/src/lstrlib.c',
+	'lua54/src/ltable.c',
+	'lua54/src/ltablib.c',
+	'lua54/src/ltm.c',
+	'lua54/src/lundump.c',
+	'lua54/src/lutf8lib.c',
+	'lua54/src/lvm.c',
+	'lua54/src/lzio.c'
+]
+
 lua52_sources += ['lua52/src/eris.c']
 lua53_sources += ['lua53/src/eris.c']
+lua54_sources += ['lua54/src/eris.c']
 
 # detect lua version
 # lua_version_code = '''#include <stdio.h>
@@ -119,3 +155,8 @@ native53_sources = lua53_sources
 native53_sources += jnlua_sources
 library('jnlua53' + lib_suffix, native53_sources, dependencies: [math_dep, jni_dep],
 	include_directories: include_directories('lua53/src', 'src'))
+
+native54_sources = lua54_sources
+native54_sources += jnlua_sources
+library('jnlua54' + lib_suffix, native54_sources, dependencies: [math_dep, jni_dep],
+	include_directories: include_directories('lua54/src', 'src'))

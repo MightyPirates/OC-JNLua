@@ -11,6 +11,8 @@
 #include <lauxlib.h>
 #include <lualib.h>
 
+#define LUA_COMPAT_APIINTCASTS
+
 /* Include uintptr_t */
 #ifdef LUA_WIN
 #include <stddef.h>
@@ -37,7 +39,10 @@
 
 // Two levels of indirection are required here due to how the C99 standard works.
 
-#if LUA_VERSION_NUM == 503
+#if LUA_VERSION_NUM == 504
+#define JNI_LUASTATE_CLASS "li/cil/repack/com/naef/jnlua/LuaStateFiveFour"
+#define JNLUA_SUFFIX FiveFour
+#elif LUA_VERSION_NUM == 503
 #define JNI_LUASTATE_CLASS "li/cil/repack/com/naef/jnlua/LuaStateFiveThree"
 #define JNLUA_SUFFIX FiveThree
 #elif LUA_VERSION_NUM == 502
@@ -425,10 +430,12 @@ static int openlib_protected (lua_State *L) {
 		libname = LUA_STRLIBNAME;
 		openfunc = luaopen_string;
 		break;
+#if (LUA_VERSION_NUM <= 502) || defined(LUA_COMPAT_BITLIB)
 	case 7:
 		libname = LUA_BITLIBNAME;
 		openfunc = luaopen_bit32;
 		break;
+#endif
 	case 8:
 		libname = LUA_MATHLIBNAME;
 		openfunc = luaopen_math;
@@ -1489,11 +1496,17 @@ JNIEXPORT jint JNICALL JNI_LUASTATE_METHOD(lua_1resume) (JNIEnv *env, jobject ob
 		T = lua_tothread(L, index);
 		if (checkstack(T, nargs)) {
 			lua_xmove(L, T, nargs);
+#if LUA_VERSION_NUM >= 504
+			status = lua_resume(T, L, nargs, &nresults);
+#else
 			status = lua_resume(T, L, nargs);
+#endif
 			switch (status) {
 			case LUA_OK:
 			case LUA_YIELD:
+#if LUA_VERSION_NUM < 504
 				nresults = lua_gettop(T);
+#endif
 				if (checkstack(L, nresults)) {
 					lua_xmove(T, L, nresults);
 				}
@@ -2278,10 +2291,12 @@ static int throw_protected (lua_State *L) {
 		class = luamemoryallocationexception_class;
 		id = luamemoryallocationexception_id;
 		break;
+#if LUA_VERSION_NUM <= 503
 	case LUA_ERRGCMM:
 		class = luagcmetamethodexception_class;
 		id = luagcmetamethodexception_id;
 		break;
+#endif
 	case LUA_ERRERR:
 		class = luamessagehandlerexception_class;
 		id = luamessagehandlerexception_id;

@@ -171,6 +171,11 @@ JNIEXPORT jstring JNICALL JNI_LUASTATE_METHOD(lua_1version)(JNIEnv *env, jobject
 	return (*env)->NewStringUTF(env, luaVersion); 
 }
 
+/* lua_versionnum() */
+JNIEXPORT jint JNICALL JNI_LUASTATE_METHOD(lua_1versionnum)(JNIEnv *env, jobject obj) {
+	return (jint) LUA_VERSION_NUM;
+}
+
 /* ---- Life cycle ---- */
 /*
  * lua_newstate()
@@ -443,14 +448,21 @@ static int openlib_protected (lua_State *L) {
 	luaL_requiref(L, libname, openfunc, 1);
 	return 1;
 }
+
+static int openlib_isvalid(jint lib) {
+#if LUA_VERSION_NUM >= 503
+#ifndef LUA_COMPAT_BITLIB
+	if (lib == 7) return 0;
+#endif
+	if (lib == 11) return 1;
+#endif
+	return (lib >= 0 && lib <= 10);
+}
+
 JNIEXPORT void JNICALL JNI_LUASTATE_METHOD(lua_1openlib) (JNIEnv *env, jobject obj, jint lib) {
 	lua_State *L = getluathread(env, obj);
 	if (checkstack(L, JNLUA_MINSTACK)
-#if LUA_VERSION_NUM >= 503
-			&& checkarg(lib >= 0 && lib <= 11, "illegal library")) {
-#else
-			&& checkarg(lib >= 0 && lib <= 10, "illegal library")) {
-#endif
+			&& checkarg(openlib_isvalid(lib), "illegal library")) {
 		lua_pushcfunction(L, openlib_protected);
 		lua_pushinteger(L, lib);
 		JNLUA_PCALL(L, 1, 1);

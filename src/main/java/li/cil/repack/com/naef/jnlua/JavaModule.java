@@ -135,7 +135,7 @@ public class JavaModule {
 
 			// Import
 			if (doImport) {
-				luaState.rawGet(LuaState.REGISTRYINDEX, LuaState.RIDX_GLOBALS);
+				luaState.rawGet(luaState.getRegistryIndex(), LuaState.RIDX_GLOBALS);
 				String name = clazz.getName();
 				int index = name.indexOf('.');
 				while (index >= 0) {

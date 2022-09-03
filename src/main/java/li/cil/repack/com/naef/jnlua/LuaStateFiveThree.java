@@ -5,24 +5,41 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class LuaStateFiveThree extends LuaState {
-	public static final int REGISTRYINDEX;
-
-	public static final String LUA_VERSION;
-
-	static {
-		NativeSupport.getInstance().getLoader().load();
-		REGISTRYINDEX = lua_registryindex();
-		LUA_VERSION = lua_version();
+	@Override
+	protected int arith_operator_id(ArithOperator o) {
+		switch (o) {
+			case ADD: return 0;
+			case SUB: return 1;
+			case MUL: return 2;
+			case MOD: return 3;
+			case POW: return 4;
+			case DIV: return 5;
+			case IDIV: return 6;
+			case BAND: return 7;
+			case BOR: return 8;
+			case BXOR: return 9;
+			case SHL: return 10;
+			case SHR: return 11;
+			case UNM: return 12;
+			case BNOT: return 13;
+			default: return -1;
+		}
 	}
 
 	@Override
-	protected int REGISTRYINDEX() {
-		return REGISTRYINDEX;
-	}
-
-	@Override
-	protected String LUA_VERSION() {
-		return LUA_VERSION;
+	protected int gc_action_id(GcAction o) {
+		switch (o) {
+			case STOP: return 0;
+			case RESTART: return 1;
+			case COLLECT: return 2;
+			case COUNT: return 3;
+			case COUNTB: return 4;
+			case STEP: return 5;
+			case SETPAUSE: return 6;
+			case SETSTEPMUL: return 7;
+			case ISRUNNING: return 9;
+			default: return -1;
+		}
 	}
 
 	public LuaStateFiveThree() {
@@ -31,10 +48,6 @@ public class LuaStateFiveThree extends LuaState {
 	public LuaStateFiveThree(int memory) {
 		super(memory);
 	}
-
-	public static native int lua_registryindex();
-
-	public static native String lua_version();
 
 	@Override
 	protected native void lua_newstate(int apiversion, long luaState);

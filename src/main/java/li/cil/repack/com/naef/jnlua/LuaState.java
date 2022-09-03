@@ -94,7 +94,7 @@ public class LuaState {
 	/**
 	 * Registry pseudo-index.
 	 */
-	public static final int REGISTRYINDEX;
+	protected final int REGISTRYINDEX;
 
 	/**
 	 * OK status.
@@ -130,12 +130,12 @@ public class LuaState {
 	/**
 	 * The Lua version. The format is &lt;major&gt;.&lt;minor&gt;.
 	 */
-	public static final String LUA_VERSION;
+	protected final String LUA_VERSION;
+
+	protected final int LUA_VERSION_NUM;
 
 	static {
 		NativeSupport.getInstance().getLoader().load();
-		REGISTRYINDEX = lua_registryindex();
-		LUA_VERSION = lua_version();
 	}
 
 	protected int REGISTRYINDEX() {
@@ -144,6 +144,37 @@ public class LuaState {
 
 	protected String LUA_VERSION() {
 		return LUA_VERSION;
+	}
+
+	protected int arith_operator_id(ArithOperator o) {
+		switch (o) {
+			case ADD: return 0;
+			case SUB: return 1;
+			case MUL: return 2;
+			case DIV: return 3;
+			case MOD: return 4;
+			case POW: return 5;
+			case UNM: return 6;
+			default: return -1;
+		}
+	}
+
+	protected int gc_action_id(GcAction o) {
+		switch (o) {
+			case STOP: return 0;
+			case RESTART: return 1;
+			case COLLECT: return 2;
+			case COUNT: return 3;
+			case COUNTB: return 4;
+			case STEP: return 5;
+			case SETPAUSE: return 6;
+			case SETSTEPMUL: return 7;
+			case SETMAJORINC: return 8;
+			case ISRUNNING: return 9;
+			case GEN: return 10;
+			case INC: return 11;
+			default: return -1;
+		}
 	}
 
 	protected static final Charset UTF_8 = Charset.forName("UTF-8");
@@ -266,6 +297,10 @@ public class LuaState {
 	 * Creates a new instance.
 	 */
 	private LuaState(long luaState, int memory) {
+		REGISTRYINDEX = lua_registryindex();
+		LUA_VERSION = lua_version();
+		LUA_VERSION_NUM = lua_versionnum();
+
 		ownState = luaState == 0L;
 		luaMemoryTotal = memory;
 		lua_newstate(APIVERSION, luaState);
@@ -306,6 +341,10 @@ public class LuaState {
 		classLoader = Thread.currentThread().getContextClassLoader();
 		javaReflector = DefaultJavaReflector.getInstance();
 		converter = DefaultConverter.getInstance();
+	}
+
+	public int getRegistryIndex() {
+		return REGISTRYINDEX;
 	}
 
 	// -- Properties
@@ -515,7 +554,7 @@ public class LuaState {
 	 */
 	public synchronized int gc(GcAction what, int data) {
 		check();
-		return lua_gc(what.ordinal(), data);
+		return lua_gc(gc_action_id(what), data);
 	}
 
 	// -- Registration
@@ -1409,7 +1448,7 @@ public class LuaState {
 	 */
 	public synchronized void arith(ArithOperator operator) {
 		check();
-		lua_arith(operator.ordinal());
+		lua_arith(arith_operator_id(operator));
 	}
 
 	/**
@@ -2393,9 +2432,11 @@ public class LuaState {
 	}
 
 	// -- Native methods
-	public static native int lua_registryindex();
+	protected native int lua_registryindex();
 
-	public static native String lua_version();
+	protected native String lua_version();
+
+	protected native int lua_versionnum();
 
 	protected native void lua_newstate(int apiversion, long luaState);
 
@@ -2695,7 +2736,7 @@ public class LuaState {
 		SETSTEPMUL,
 
 		/**
-		 * Undocumented.
+		 * Undocumented. Removed in Lua 5.3+.
 		 * 
 		 * @since JNLua 1.0.0
 		 */
@@ -2710,14 +2751,18 @@ public class LuaState {
 
 		/**
 		 * Changes the collector to the generational mode.
-		 * 
+		 *
+		 * Considered experimental in Lua 5.2, removed in Lua 5.3+.
+		 *
 		 * @since JNLua 1.0.0
 		 */
 		GEN,
 
 		/**
 		 * Changes the collector to the incremental mode.
-		 * 
+		 *
+		 * Considered experimental in Lua 5.2, removed in Lua 5.3+.
+		 *
 		 * @since JNLua 1.0.0
 		 */
 		INC
@@ -2763,7 +2808,70 @@ public class LuaState {
 		/**
 		 * Mathematical negation operator.
 		 */
-		UNM
+		UNM,
+
+		/**
+		 * Integer division operator.
+		 *
+		 * Available in Lua 5.3+.
+		 *
+		 * @since JNLua 1.1.0
+		 */
+		IDIV,
+
+		/**
+		 * Binary AND operator.
+		 *
+		 * Available in Lua 5.3+.
+		 *
+		 * @since JNLua 1.1.0
+		 */
+		BAND,
+
+		/**
+		 * Binary OR operator.
+		 *
+		 * Available in Lua 5.3+.
+		 *
+		 * @since JNLua 1.1.0
+		 */
+		BOR,
+
+		/**
+		 * Binary XOR operator.
+		 *
+		 * Available in Lua 5.3+.
+		 *
+		 * @since JNLua 1.1.0
+		 */
+		BXOR,
+
+		/**
+		 * Shift left operator.
+		 *
+		 * Available in Lua 5.3+.
+		 *
+		 * @since JNLua 1.1.0
+		 */
+		SHL,
+
+		/**
+		 * Shift right operator.
+		 *
+		 * Available in Lua 5.3+.
+		 *
+		 * @since JNLua 1.1.0
+		 */
+		SHR,
+
+		/**
+		 * Binary negation operator.
+		 *
+		 * Available in Lua 5.3+.
+		 *
+		 * @since JNLua 1.1.0
+		 */
+		BNOT;
 	}
 
 	/**

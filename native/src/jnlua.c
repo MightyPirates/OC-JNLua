@@ -406,10 +406,12 @@ static int openlib_protected (lua_State *L) {
 		libname = "_G";
 		openfunc = luaopen_base;
 		break;
+#ifdef JNLUA_COMPLETE
 	case 1:
 		libname = LUA_LOADLIBNAME;
 		openfunc = luaopen_package;
 		break;
+#endif
 	case 2:
 		libname = LUA_COLIBNAME;
 		openfunc = luaopen_coroutine;
@@ -418,6 +420,7 @@ static int openlib_protected (lua_State *L) {
 		libname = LUA_TABLIBNAME;
 		openfunc = luaopen_table;
 		break;
+#ifdef JNLUA_COMPLETE
 	case 4:
 		libname = LUA_IOLIBNAME;
 		openfunc = luaopen_io;
@@ -426,6 +429,7 @@ static int openlib_protected (lua_State *L) {
 		libname = LUA_OSLIBNAME;
 		openfunc = luaopen_os;
 		break;
+#endif
 	case 6:
 		libname = LUA_STRLIBNAME;
 		openfunc = luaopen_string;
@@ -467,6 +471,9 @@ static int openlib_isvalid(jint lib) {
 	if (lib == 7) return 0;
 #endif
 	if (lib == 11) return 1;
+#endif
+#ifdef JNLUA_COMPLETE
+	if (lib == 1 || lib == 4 || lib == 5) return 0;
 #endif
 	return (lib >= 0 && lib <= 10);
 }

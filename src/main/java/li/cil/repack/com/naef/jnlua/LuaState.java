@@ -905,6 +905,22 @@ public class LuaState {
 	}
 
 	/**
+	 * Returns whether the value at the specified stack index is an integer
+	 * number.
+	 *
+	 * <p>
+	 * The stack index may be non-valid.
+	 * </p>
+	 *
+	 * @param index
+	 *            the stack index
+	 * @return whether the value is an integer number.
+	 */
+	public synchronized boolean isInteger(int index) {
+		return false;
+	}
+
+	/**
 	 * Returns whether the value at the specified stack index is a Java
 	 * function.
 	 * 
@@ -2404,7 +2420,7 @@ public class LuaState {
 	/**
 	 * Checks this Lua state.
 	 */
-	private void check() {
+	void check() {
 		// Check open
 		if (!isOpenInternal()) {
 			throw new IllegalStateException("Lua state is closed");

@@ -13,6 +13,13 @@ public class LuaStateFiveFour extends LuaStateFiveThree {
 		super(memory);
 	}
 
+	/* Lua 5.3 overrides */
+
+	@Override
+	protected native boolean lua_isinteger(int index);
+
+	/* Lua 5.2 overrides */
+
 	@Override
 	protected native int lua_integerwidth();
 

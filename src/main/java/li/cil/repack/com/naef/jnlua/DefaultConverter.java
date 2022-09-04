@@ -346,7 +346,11 @@ public class DefaultConverter implements Converter {
 				return (T) luaValueConverter.convert(luaState, index);
 			}
 			if (formalType == Object.class) {
-				return (T) Double.valueOf(luaState.toNumber(index));
+				if (luaState.isInteger(index)) {
+					return (T) Long.valueOf(luaState.toInteger(index));
+				} else {
+					return (T) Double.valueOf(luaState.toNumber(index));
+				}
 			}
 			break;
 		case STRING:

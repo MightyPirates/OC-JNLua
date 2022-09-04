@@ -754,6 +754,17 @@ JNIEXPORT jboolean JNICALL JNI_LUASTATE_METHOD(lua_1isfunction) (JNIEnv *env, jo
 	return (jboolean) lua_isfunction(L, index);
 }
 
+#if LUA_VERSION_NUM >= 503
+/* lua_isinteger() */
+JNIEXPORT jboolean JNICALL JNI_LUASTATE_METHOD(lua_1isinteger) (JNIEnv *env, jobject obj, jint index) {
+	lua_State *L = getluathread(env, obj);
+	if (!validindex(L, index)) {
+		return 0;
+	}
+	return (jboolean) lua_isinteger(L, index);
+}
+#endif
+
 /* lua_isjavafunction() */
 JNIEXPORT jboolean JNICALL JNI_LUASTATE_METHOD(lua_1isjavafunction) (JNIEnv *env, jobject obj, jint index) {
 	lua_State *L = getluathread(env, obj);

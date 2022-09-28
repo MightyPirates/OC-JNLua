@@ -25,7 +25,7 @@
 #define AS_STR_INNER(x) # x
 
 /* ---- Definitions ---- */
-#define JNLUA_APIVERSION 3
+#define JNLUA_APIVERSION 4
 #define JNLUA_JNIVERSION JNI_VERSION_1_6
 #define JNLUA_JAVASTATE "jnlua.JavaState"
 #define JNLUA_OBJECT "jnlua.Object"
@@ -163,6 +163,11 @@ static JavaVM *java_vm = NULL;
 /* lua_integerwidth() */
 JNIEXPORT jint JNICALL JNI_LUASTATE_METHOD(lua_1integerwidth) (JNIEnv *env, jobject obj) {
 	return sizeof(lua_Integer);
+}
+
+/* lua_pointerwidth() */
+JNIEXPORT jint JNICALL JNI_LUASTATE_METHOD(lua_1pointerwidth) (JNIEnv *env, jobject obj) {
+	return sizeof(void*);
 }
 
 /* lua_registryindex() */

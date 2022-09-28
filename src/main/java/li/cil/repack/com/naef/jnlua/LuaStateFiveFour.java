@@ -24,6 +24,9 @@ public class LuaStateFiveFour extends LuaStateFiveThree {
 	protected native int lua_integerwidth();
 
 	@Override
+	protected native int lua_pointerwidth();
+
+	@Override
 	protected native int lua_registryindex();
 
 	@Override

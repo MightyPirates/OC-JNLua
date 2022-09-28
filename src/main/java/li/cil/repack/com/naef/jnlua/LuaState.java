@@ -136,6 +136,7 @@ public class LuaState {
 
 	protected final int LUA_VERSION_NUM;
 	protected final int INTEGERWIDTH;
+	protected final int POINTERWIDTH;
 
 	protected int arith_operator_id(ArithOperator o) {
 		switch (o) {
@@ -171,7 +172,7 @@ public class LuaState {
 	/**
 	 * The API version.
 	 */
-	private static final int APIVERSION = 3;
+	private static final int APIVERSION = 4;
 
 	// -- State
 	/**
@@ -290,6 +291,7 @@ public class LuaState {
 		LUA_VERSION = lua_version();
 		LUA_VERSION_NUM = lua_versionnum();
 		INTEGERWIDTH = lua_integerwidth();
+		POINTERWIDTH = lua_pointerwidth();
 
 		ownState = luaState == 0L;
 		luaMemoryTotal = memory;
@@ -2393,6 +2395,10 @@ public class LuaState {
 		return INTEGERWIDTH;
 	}
 
+	public int getPointerWidth() {
+		return POINTERWIDTH;
+	}
+
 	public boolean areLongsSupported() {
 		return INTEGERWIDTH >= 8;
 	}
@@ -2497,6 +2503,8 @@ public class LuaState {
 
 	// -- Native methods
 	protected native int lua_integerwidth();
+
+	protected native int lua_pointerwidth();
 
 	protected native int lua_registryindex();
 

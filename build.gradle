@@ -1,13 +1,13 @@
 apply plugin: 'java'
 
 archivesBaseName = 'OC-JNLua'
-version = '20220904.0'
+version = '20220928.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 task nativesJar(type: Jar) {
-	archivesBaseName = 'OC-JNLua-Natives'
+	baseName = 'OC-JNLua-Natives'
 
 	into('assets/opencomputers/lib') {
 		from('native/build-all-out') {
@@ -15,3 +15,5 @@ task nativesJar(type: Jar) {
 		}
 	}
 }
+
+build.dependsOn nativesJar

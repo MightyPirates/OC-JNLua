@@ -9,9 +9,9 @@ mkdir build-all-out
 export PATH=`pwd`/cross/bin:$PATH
 for cross_ini in cross/*.ini; do
 	if [[ "$cross_ini" == *"linux-"* ]]; then
-		meson setup build-all-tmp --cross-file "$cross_ini" -Dbuildtype=release -Db_lto=true
+		meson setup build-all-tmp --cross-file "$cross_ini" -Dbuildtype=release -Db_lto=true -Duse_local_jni=false
 	else
-		meson setup build-all-tmp --cross-file "$cross_ini" -Dbuildtype=release
+		meson setup build-all-tmp --cross-file "$cross_ini" -Dbuildtype=release -Duse_local_jni=false
 	fi
 	cd build-all-tmp
 	meson compile

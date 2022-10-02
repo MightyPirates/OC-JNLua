@@ -154,20 +154,23 @@ endif
 lib_suffix = '-' + host_machine.system() + '-' + host_machine.cpu_family()
 
 math_dep = compiler.find_library('m', required: true)
-# jni_dep = dependency('jni', version: '>= 1.8.0', modules: ['jvm'], required: true)
-jni_include_dir = join_paths('jni', host_machine.system(), host_machine.cpu_family(), 'include')
-jni_lib_dir = join_paths(meson.source_root(), 'jni', host_machine.system(), host_machine.cpu_family(), 'lib')
-if host_machine.system() == 'windows'
-	jni_lib_file = join_paths(jni_lib_dir, 'jvm.dll')
-	jni_dep = declare_dependency(
-		link_args: [jni_lib_file],
-		include_directories: include_directories(jni_include_dir)
-	)
+if get_option('use_local_jni')
+	jni_dep = dependency('jni', version: '>= 1.8.0', modules: ['jvm'], required: true)
 else
-	jni_dep = declare_dependency(
-		link_args: ['-L' + jni_lib_dir, '-ljvm'],
-		include_directories: include_directories(jni_include_dir)
-	)
+	jni_include_dir = join_paths('jni', host_machine.system(), host_machine.cpu_family(), 'include')
+	jni_lib_dir = join_paths(meson.source_root(), 'jni', host_machine.system(), host_machine.cpu_family(), 'lib')
+	if host_machine.system() == 'windows'
+		jni_lib_file = join_paths(jni_lib_dir, 'jvm.dll')
+		jni_dep = declare_dependency(
+			link_args: [jni_lib_file],
+			include_directories: include_directories(jni_include_dir)
+		)
+	else
+		jni_dep = declare_dependency(
+			link_args: ['-L' + jni_lib_dir, '-ljvm'],
+			include_directories: include_directories(jni_include_dir)
+		)
+	endif
 endif
 
 native52_sources = lua52_sources

@@ -1,1 +1,2 @@
 option('enable_javavm', type: 'boolean', value: false)
+option('use_local_jni', type: 'boolean', value: true)

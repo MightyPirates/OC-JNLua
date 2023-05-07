@@ -1,2 +1,6 @@
 #!/bin/sh
-zig cc -target arm-linux-gnueabihf $@
+if [[ "$*" == *"-Wl,--version"* ]]; then
+	echo "LLD 15.0.7 (compatible with GNU linkers)"
+else
+	zig cc -target arm-linux-gnueabihf $@
+fi

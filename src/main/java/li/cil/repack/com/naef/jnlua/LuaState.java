@@ -2057,7 +2057,11 @@ public class LuaState {
 		check();
 		Long value = toIntegerX(index);
 		if (value == null) {
-			throw getArgTypeException(index, LuaType.NUMBER);
+			if (toNumberX(index) != null) {
+				throw getArgException(index, "number has no integer representation");
+			} else {
+				throw getArgTypeException(index, LuaType.NUMBER);
+			}
 		}
 		if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
 			throw getArgException(index, "out of range");
@@ -2101,7 +2105,11 @@ public class LuaState {
 		check();
 		Long value = toIntegerX(index);
 		if (value == null) {
-			throw getArgTypeException(index, LuaType.NUMBER);
+			if (toNumberX(index) != null) {
+				throw getArgException(index, "number has no integer representation");
+			} else {
+				throw getArgTypeException(index, LuaType.NUMBER);
+			}
 		}
 		return value;
 	}
